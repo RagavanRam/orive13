@@ -1,0 +1,100 @@
+<div class="detail-box">
+  <div class="detail py-4">
+    <div class="images border border-dark ml-3">
+      <h3 class="text-center title h1 mb-5 mt-3">{{item?.pdfType}}</h3>
+      <hr>
+      <div class="row">
+        <div class="col-4">
+          <h1 class="h4 ml-3">Inventory Name</h1>
+        </div>
+        <div class="col-1">
+          <h1 class="h4">:</h1>
+        </div>
+        <div class="col">
+          <h1 class="h5 font-weight-normal">{{item.inventoryname}}</h1>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-4">
+          <h1 class="h4 ml-3">Contact Details</h1>
+        </div>
+        <div class="col-1">
+          <h1 class="h4">:</h1>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col-12">
+              <h1 class="h5 font-weight-normal">Contact No 1 : {{item.inventoryContact.contactno_1}}</h1>
+            </div>
+            <div class="col-12">
+              <h1 class="h5 font-weight-normal">Contact No 2 : {{item.inventoryContact.contactno_2}}</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-4">
+          <h1 class="h4 ml-3">Inventory Address</h1>
+        </div>
+        <div class="col-1">
+          <h1 class="h4">:</h1>
+        </div>
+        <div class="col">
+          <h1 class="h5 font-weight-normal">{{item.inventoryAddress}}</h1>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-4">
+          <h1 class="h4 ml-3">{{ item.inventorytype == 'society'? 'Society Type': 'Board Size'}}</h1>
+        </div>
+        <div class="col-1">
+          <h1 class="h4">:</h1>
+        </div>
+        <div class="col">
+          <h1 class="h5 font-weight-normal">{{item.inventorytype == 'society'? item.societyType: item.boardSize}}</h1>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-4">
+          <h1 class="h4 ml-3"> Geo Location</h1>
+        </div>
+        <div class="col-1">
+          <h1 class="h4">:</h1>
+        </div>
+        <div class="col">
+          <h1 class="h5 font-weight-normal">{{item.geoLocation}}</h1>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-4">
+          <h1 class="h4 ml-3">Date and Time</h1>
+        </div>
+        <div class="col-1">
+          <h1 class="h4">:</h1>
+        </div>
+        <div class="col">
+          <h1 class="h5 font-weight-normal">{{item.date}}</h1>
+        </div>
+      </div>
+      <hr>
+    </div>
+  </div>
+</div>
+<div class="image-box py-4" *ngFor="let data of item.images">
+  <div class="images mx-3 border border-dark">
+    <div class="row mx-2 mt-2">
+      <div class="col-6 p-3" *ngFor="let img of data">
+        <div class="image-container">
+          <img src="{{img.imgPath}}" class="img" alt="">
+          <p class="overlay">{{img.imgTitle}}</p>
+        </div>
+        <p class="mt-2">{{img.imgGeo}}</p>
+      </div>
+    </div>
+  </div>
+</div>

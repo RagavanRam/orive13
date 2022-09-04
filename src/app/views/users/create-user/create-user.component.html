@@ -1,0 +1,167 @@
+<h4>Create new user</h4>
+<!--p>Creating new user will trigger an email to respective person to validate the account.</p-->
+<div class="card mb-5">
+    <div class="card-body">
+        <form [formGroup]="register" class="col-md-12 g-3 was-validated" (ngSubmit)="onSubmit()" novalidate>
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label for="firstName">First name*</label>
+                    <input type="text" class="form-control" id="firstName" placeholder="Enter your first name"
+                        [formControl]="firstName" required>
+                    <div class="invalid-feedback" *ngIf="firstName.errors?.['required']">
+                        First name is required.
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="lastName">Last name*</label>
+                    <input type="text" class="form-control" id="lastName" placeholder="Enter your last name"
+                        [formControl]="lastName" required>
+                    <div class="invalid-feedback" *ngIf="lastName.errors?.['required']">
+                        Last name is required.
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="exampleInputEmail1">Email address*</label>
+                    <input type="email" class="form-control" id="email" aria-describedby="emailHelp"
+                        placeholder="Enter email" [formControl]="email" name="email" required>
+                    <!--small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                        else.</small-->
+                    <div class="invalid-feedback" *ngIf="email.errors?.['required']">
+                        Email is required.
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="phone">Phone*</label>
+                    <input type="phone" class="form-control" id="phone" placeholder="Enter phone" [formControl]="phone"
+                        required>
+                    <div class="invalid-feedback" *ngIf="phone.errors?.['required']">
+                        Phone no. is required.
+                    </div>
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="phone">Password</label>
+                    <input type="password" class="form-control" id="pwd" placeholder="Enter Password"
+                        [formControl]="pwd" required minlength="9">
+                    <div class="invalid-feedback" *ngIf="pwd.errors?.['required']">
+                        Password is required.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="pwd.errors?.['minlength']">
+                        Password should be min. of 9 characters.
+                    </div>
+
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="phone">Confirm Password</label>
+                    <input type="text" class="form-control" id="confirmpwd" placeholder="Enter Password"
+                        [formControl]="confirmpwd" required minlength="9">
+                    <div class="invalid-feedback" *ngIf="confirmpwd.errors?.['required']">
+                        confirm Password is required.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="confirmpwd.errors?.['minlength']">
+                        Password should be min. of 9 characters.
+                    </div>
+                    <div class=" invalid-feedback" *ngIf="confirmpwd.errors?.['passwordMismatch']">
+                        Password and confirm password should match
+                    </div>
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="role">Role</label>
+                    <div class="input-group">
+                        <select class="form-control" [formControl]="role" id="role" required>
+                            <option [value]="role.id" *ngFor="let role of roles"> {{ role.attributes.rolename }}
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="role.errors?.['required']">
+                            Role is required.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="emp_id">Employee ID</label>
+                    <input type="text" class="form-control" id="emp_id" placeholder="Employee ID"
+                        [formControl]="emp_no">
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="state">State *</label>
+                    <div class="input-group">
+                        <select class="form-control" [formControl]="state" id="state" required>
+                            <option [value]="item.id" *ngFor="let item of state_list">
+                                {{ item.attributes.statename }}</option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="state.errors?.['required']">
+                            State is required.
+                        </div>
+                        <!--div class="input-group-append">
+                            <button class="btn btn-secondary" (click)="openModal(statename)" type="button">
+                                <i class="icon-regular i-Add"></i>
+                            </button>
+                        </div-->
+                    </div>
+                    <!--div class="invalid-feedback" *ngIf="state.touched">
+                        State is required.
+                    </div-->
+                </div>
+                <!--div class="col-md-6 form-group mb-3">
+                    <label for="pinCode">Pin Code</label>
+                    <input type="number" max="6" class="form-control" id="pinCode" placeholder="Enter phone"
+                        [formControl]="pincode">
+                </div-->
+                <div class="col-md-6 form-group mb-3">
+                    <label for="state">Deploy Location </label>
+                    <div class="input-group">
+                        <select class="form-control" [formControl]="deploystate" id="deploystate" multiple>
+                            <option [value]="item.id" *ngFor="let item of state_list">
+                                {{ item.attributes.statename }}</option>
+                        </select>
+                        <!--div class="input-group-append">
+                            <button class="btn btn-secondary" (click)="openModal(statename)" type="button">
+                                <i class="icon-regular i-Add"></i>
+                            </button>
+                        </div-->
+                    </div>
+
+                </div>
+                <!--div class="col-md-6 form-group mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="worker" (click)="setWorker()">
+                        <label class="form-check-label" for="worker">
+                            Worker?
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group mb-3" *ngIf="worker">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="employee" id="employee" value="EMP" checked
+                            [formControl]="emp_type">
+                        <label class="form-check-label" for="employee">
+                            ORIV Employee
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="employee" id="contract" value="OSC"
+                            [formControl]="emp_type">
+                        <label class="form-check-label" for="contract">
+                            Outsourced
+                        </label>
+                    </div>
+                </div-->
+
+
+
+                <div class="col-md-2 mt-3 mt-md-0">
+                    <button type="submit" class="btn btn-primary" [disabled]="!register.valid">Create
+                        User</button>
+                </div>
+                <div class=" col-md-2 mt-3 mt-md-0">
+                    <button type="submit" class="btn btn-primary" [disabled]="!register.touched"
+                        (click)="register.reset()">Reset
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

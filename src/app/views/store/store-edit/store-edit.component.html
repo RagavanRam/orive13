@@ -1,0 +1,102 @@
+<h4>Edit Store details</h4>
+<!-- <p>Creating new store will trigger an email to respective person to validate the account.</p> -->
+<div class="card mb-5">
+    <div class="card-body">
+        <form (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label for="storeName">Store name</label>
+                    <input type="text" class="form-control" id="storeName" placeholder="Enter your store name"
+                        [formControl]="storeName">
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="doorno">Door no.</label>
+                    <input type="text" class="form-control" id="doorno" placeholder="Door no." [formControl]="doorno">
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="street">Street</label>
+                    <input type="text" class="form-control" id="street" placeholder="Enter Street name"
+                        [formControl]="street">
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="city">City</label>
+                    <input type="text" class="form-control" id="city" placeholder="Enter city" [formControl]="city">
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="state">State</label>
+                    <input type="text" class="form-control" id="state" placeholder="Enter state" [formControl]="state">
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="pinCode">Pin Code</label>
+                    <input type="number" max="6" class="form-control" id="pinCode" placeholder="Enter pin code"
+                        [formControl]="pincode">
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="storeType">Store Type</label>
+                    <div class="input-group">
+                        <select class="form-control" [formControl]="store_type" id="storeType">
+                            <option [value]="item.name" *ngFor="let item of store_type_list">{{ item.name }}</option>
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="button" (click)="openModal(storeType)">
+                                <i class="icon-regular i-Add"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="phone">Phone</label>
+                    <input type="number" class="form-control" id="phone" placeholder="Enter phone number"
+                        [formControl]="phone">
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label for="boardType">Board Type</label>
+                    <select class="form-control" [formControl]="board_type" id="boardType">
+                        <option value="LED">LED board</option>
+                        <option value="BLT">Backlight board</option>
+                    </select>
+                </div>
+                <agm-map [latitude]="marker.lat" [longitude]="marker.lng" [zoom]="16" (mapClick)="mapClicked($event)">
+                    <agm-marker [latitude]="marker.lat" [longitude]="marker.lng" [markerDraggable]="marker.draggable">
+                        <agm-info-window [isOpen]="true" *ngIf="storeName.value">
+                            <strong style="color: #495057;">{{ storeName.value }}</strong>
+                        </agm-info-window>
+                    </agm-marker>
+                </agm-map>
+
+                <div class="col-md-12 mt-3">
+                    <button type="submit" class="btn btn-primary" [disabled]="lat === 0">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- STORE TYPE MODEL -->
+<ng-template #storeType let-modal>
+    <form (ngSubmit)="createStoreType(modal.dismiss)">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Store Type creation</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="type">Store Type</label>
+                <input id="type" class="form-control form-control-rounded" type="text" [formControl]="newStoreType">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary btn-rounded mt-3">Create Type</button>
+        </div>
+    </form>
+</ng-template>

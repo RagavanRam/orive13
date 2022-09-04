@@ -1,0 +1,141 @@
+             <section class="contact-list">
+                 <div class="breadcrumb">
+                     <div>
+                         <h1 style="display: inline-block;">Projects</h1>
+                     </div>
+                     <div class="ml-3" style="flex-grow: 2;">
+                         <input type="text" class="form-control" id="search" placeholder="search Projects" #search
+                             (input)="filter('')">
+                     </div>
+                 </div>
+
+                 <div class="separator-breadcrumb border-top"></div>
+                 <div class="row">
+
+                     <div class="col-md-12 mb-4">
+
+                         <div class="card text-left">
+                             <div class="card-header text-right bg-transparent">
+                                 <button type="button" data-toggle="modal" data-target=".bd-example-modal-lg"
+                                     class="btn btn-primary btn-md m-1" (click)="navigate()"><i
+                                         class="i-Add-User text-white mr-2"></i> Add
+                                     Project</button>
+                             </div>
+                             <!-- begin::modal -->
+                             <!--div class="ul-card-list__modal">
+                                 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+                                     aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                     <div class="modal-dialog modal-lg">
+                                         <div class="modal-content">
+                                             <div class="modal-body">
+                                                 <form>
+                                                     <div class="form-group row">
+                                                         <label for="inputName" class="col-sm-2 col-form-label">Project
+                                                             Name</label>
+                                                         <div class="col-sm-10">
+                                                             <input type="email" class="form-control" id="inputName"
+                                                                 placeholder="Name">
+                                                         </div>
+                                                     </div>
+                                                     <div class="form-group row">
+                                                         <label for="inputEmail3" class="col-sm-2 col-form-label">Ref.
+                                                             No.</label>
+                                                         <div class="col-sm-10">
+                                                             <input type="email" class="form-control" id="inputEmail3"
+                                                                 placeholder="Email">
+                                                         </div>
+                                                     </div>
+                                                     <div class="form-group row">
+                                                         <label for="" class="col-sm-2 col-form-label">Start
+                                                             Date</label>
+                                                         <div class="col-sm-10">
+                                                             <input type="number" class="form-control" id=""
+                                                                 placeholder="number....">
+                                                         </div>
+                                                     </div>
+
+                                                 </form>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div-->
+                             <!-- end::modal -->
+
+                             <div class="card-body">
+
+                                 <div class="table-responsive table-striped">
+                                     <table id="ul-contact-list" class="display table " style="width:100%">
+                                         <thead>
+                                             <tr>
+                                                 <th>Project Name</th>
+                                                 <th>Ref. No</th>
+                                                 <th>Start Date</th>
+                                                 <th>End Date</th>
+                                                 <th>Audit Interval (in days)</th>
+                                                 <th>Assigned To</th>
+                                                 <th>Pincodes</th>
+                                                 <th>Status</th>
+                                                 <th>Action</th>
+                                             </tr>
+                                         </thead>
+                                         <tbody>
+                                             <tr
+                                                 *ngFor="let project of projects  | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                                                 <td><a class="ul-link-action text-success" data-toggle="tooltip"
+                                                         data-placement="top" title="View" style="cursor:pointer"
+                                                         (click)="navigateProjectEdit(project.id)">{{project.attributes?.projectname}}</a>
+                                                 </td>
+                                                 <td>{{project.attributes?.refno}}</td>
+                                                 <td>{{project.attributes?.start_date}}</td>
+                                                 <td>{{project.attributes?.end_date}}</td>
+                                                 <td>{{project.attributes?.auditinterval}}</td>
+                                                 <td>{{project.attributes?.assignedto?.data?.attributes?.username}}</td>
+                                                 <td>
+                                                     <p class="m-0 text-success text-small w-15 w-sm-100 ng-tns-c158-1">
+                                                         <span *ngFor="let pincode of project.attributes?.pincodes">
+                                                             {{pincode.pincode}}</span></p>
+
+                                                 </td>
+
+                                                 <td><span [ngClass]="{
+                                                     'badge badge-primary mr-1' :
+                                                     project?.attributes?.status ==='Created',
+                                                    'badge badge-info' :
+                                                    project?.attributes?.status ===
+                                                    'InProgress','badge badge-success mr-1' :
+                                                    project?.attributes?.status ===
+                                                    'Live','badge badge-warning mr-1' :
+                                                    project?.attributes?.status ===
+                                                    'Installed','badge badge-light mr-1' :
+                                                    project?.attributes?.status ===
+                                                    'Completed'}">
+                                                         {{project.attributes?.status}}</span>
+                                                 </td>
+                                                 <td>
+                                                     <a (click)="navigateProjectEdit(project.id)"
+                                                         class="ul-link-action text-success" data-toggle="tooltip"
+                                                         data-placement="top" title="Edit" style="cursor:pointer">
+                                                         <i class="i-Edit"></i>
+                                                     </a>
+                                                     <!--a href="" class="ul-link-action text-danger mr-1"
+                                                         data-toggle="tooltip" data-placement="top"
+                                                         title="Want To Delete !!!">
+                                                         <i class="i-Eraser-2"></i>
+                                                     </a-->
+                                                 </td>
+                                             </tr>
+                                         </tbody>
+
+                                     </table>
+                                 </div>
+                                 <!-- PAGINATION CONTROL -->
+                                 <div class="col-md-12 mt-3" *ngIf="projects?.length">
+                                     <pagination-controls (pageChange)="page = $event" (click)="projectPageChange()" previousLabel="" nextLabel="">
+                                     </pagination-controls>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </section>

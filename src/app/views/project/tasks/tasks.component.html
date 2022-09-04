@@ -1,0 +1,473 @@
+             <section class="contact-list">
+                 <div class="breadcrumb">
+                     <div>
+                         <h1 style="display: inline-block;">Tasks</h1>
+                     </div>
+                     <div class="ml-3" style="flex-grow: 2;">
+                         <input type="text" class="form-control" id="search" placeholder="search Tasks" #search
+                             (input)="filter('')">
+                     </div>
+                 </div>
+
+                 <div class="separator-breadcrumb border-top"></div>
+                 <div class="row">
+
+                     <div class="col-md-12 mb-4">
+                         <div class="card-body">
+                             <h5 class=" card-title">Tasks</h5>
+                             <div class="table-responsive">
+                                 <table id="ul-contact-list" class="display table " style="width:100%">
+                                     <thead>
+                                         <tr>
+                                             <th></th>
+                                             <!--th>Attachments</th-->
+                                             <th>Description</th>
+                                             <th>Task Type</th>
+                                             <th>Assigned To</th>
+                                             <th>Date-Planned</th>
+                                             <th>Date-Completed</th>
+                                             <th>Completion Status</th>
+                                             <th>Date Created</th>
+                                             <th>Edit</th>
+                                         </tr>
+                                     </thead>
+                                     <tbody>
+                                         <ng-container *ngFor="let task of task_list | paginate: { itemsPerPage: pageSize,
+                                             currentPage: page }; let i = index">
+                                             <tr>
+
+                                                 <td>
+                                                     <button type="button" class="btn btn-primary btn-icon m-1"
+                                                         (click)="openSubTaskModal(subtaskupdate,task)">
+                                                         <span class=" ul-btn__icon"><i
+                                                                 class="i-Arrow-Right"></i></span>
+                                                     </button>
+
+                                                     <!--div *ngIf="task.attributes.workorder" [attr.id]="'row'+i">
+                                                         <span class="badge badge-primary ml-1" type="button"
+                                                             data-toggle="collapse"
+                                                             [attr.data-target]="'#collapseRow'+ i"
+                                                             aria-expanded="false"
+                                                             [attr.aria-controls]="'collapseRow'+i">+</span>
+                                                     </div-->
+                                                 </td>
+                                                 <!--td>
+                                                     <button type="button" class="btn btn-success btn-icon m-1"
+                                                         (click)="openAttachmentModal(logcreate,task)">
+                                                         <span class=" ul-btn__icon"><i class="i-Camera"></i></span>
+                                                     </button>
+                                                 </td>
+                                                 <td>
+                                                     <button type="button" class="btn btn-success btn-icon m-1"
+                                                         (click)=" openAttachmentModal(galleryview,task)"
+                                                         style="cursor:pointer">
+                                                         <i class="nav-icon i-Eye"></i>
+                                                     </button>
+                                                 </td-->
+                                                 <td><a class="ul-link-action text-success" data-toggle="tooltip"
+                                                         data-placement="top" title="View" style="cursor:pointer">
+                                                         {{task.attributes?.description}}
+                                                     </a>
+                                                 </td>
+                                                 <td>{{task.attributes?.type}}</td>
+                                                 <td>{{task.attributes?.assigned?.data?.attributes?.username}}</td>
+                                                 <td>{{task.attributes?.completiondate_planned | date: 'dd-MM-yyyy'}}
+                                                 </td>
+                                                 <td>{{task.attributes?.completiondate_actual | date: 'dd-MM-yyyy'}}
+                                                 </td>
+
+                                                 <td><span [ngClass]="{
+                                                     'badge badge-primary mr-1' :
+                                                     task?.attributes?.status =='Assigned',
+                                                    'badge badge-warning mr-1' :
+                                                    task?.attributes?.status ==
+                                                    'InProgress','badge badge-success mr-1' :
+                                                    task?.attributes?.status ==
+                                                    'Completed'}">
+                                                         {{task.attributes?.status}}</span>
+                                                 </td>
+                                                 <td>{{task.attributes?.createdAt | date :'dd-MM-yyyy'}}</td>
+                                                 <td>
+                                                     <button type="button" class="btn btn-success btn-icon m-1"
+                                                         (click)="openModal(taskcreate,task)" style="cursor:pointer">
+                                                         <i class="nav-icon i-Pen-2 "></i>
+                                                     </button>
+                                                 </td>
+                                             </tr>
+                                             <!--tr *ngFor="let workorder of task.attributes.workorder"
+                                                 class="collapse show" id="collapseRow{{i}}"
+                                                 [attr.name]="'collapseRow' + i" [attr.data-parent]="'#row'+i">
+                                                 <td>{{workorder.id}}</td>
+                                                 <td>
+                                                     {{workorder.type}}
+                                                 </td>
+                                                 <td>
+                                                     <select class="form-control" id="status" name="status">
+                                                         <option [value]="item" *ngFor="let item of status"
+                                                             [attr.selected]="'(!workorder.status)?item==Assigned:item==workorder.status'">
+                                                             {{item}}
+                                                         </option>
+                                                     </select>
+                                                 </td>
+                                                 <td colspan="6"></td>
+                                             </tr-->
+                                         </ng-container>
+                                     </tbody>
+
+                                 </table>
+                             </div>
+                             <!-- PAGINATION CONTROL -->
+                             <div class="col-md-12 mt-3" *ngIf="task_list?.length">
+                                 <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel="">
+                                 </pagination-controls>
+                             </div>
+                         </div>
+
+                     </div>
+                 </div>
+             </section>
+             <!--TASK CREATE MODAL-->
+             <ng-template #taskcreate let-modal>
+                 <form (ngSubmit)="updateTask(modal.dismiss)">
+                     <div class="modal-header">
+                         <h4 class="modal-title" id="modal-basic-title">Edit Task</h4>
+                         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                             <span aria-hidden="true">&times;</span>
+                         </button>
+                     </div>
+                     <div class="modal-body">
+                         <div class="form-group">
+                             <div class="row">
+                                 <div class="col-md-9 form-group mb-3">
+                                     <label for="tasktype">Project</label>
+                                     <input class="form-control" [formControl]="project" id="project" name="project"
+                                         type="text" readonly>
+                                 </div>
+                             </div>
+                             <div class="row">
+                                 <div class="col-md-9 form-group mb-3">
+                                     <label for="tasktype">Task Type</label>
+                                     <input class="form-control" [formControl]="tasktype" id="tasktype" name="tasktype"
+                                         type="text" readonly>
+                                 </div>
+                             </div>
+                             <div class="row">
+                                 <div class="col-md-9 form-group mb-3">
+                                     <label for="taskdec">Task Description</label>
+                                     <input id="taskdec" class="form-control" type="text" [formControl]="taskdec"
+                                         multiple>
+                                 </div>
+                             </div>
+                             <div class="row">
+                                 <div class="col-md-6 form-group mb-3">
+                                     <label for="t_planneddateofcomp">Planned Date of completion.</label>
+                                     <input id="t_planneddateofcomp" class="form-control" type="date"
+                                         name="t_planneddateofcomp" [formControl]="t_planneddateofcomp">
+                                 </div>
+                                 <div class="col-md-6 form-group mb-3">
+                                     <label for="t_actualdateofcomp">Actual Date of completion.</label>
+                                     <input id="t_actualdateofcomp" class="form-control" type="date"
+                                         [formControl]="t_actualdateofcomp">
+                                 </div>
+                             </div>
+                             <div class="row">
+                                 <div class="col-md-9 form-group mb-3">
+                                     <label for="tstatus">Status</label>
+                                     <select class="form-control" [formControl]="tstatus" id="tstatus" name="tstatus">
+                                         <option [value]="item" *ngFor="let item of task_status">
+                                             {{ item}}
+                                         </option>
+                                     </select>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="modal-footer">
+                         <button type="submit" class="btn btn-primary btn-rounded mt-3">Save
+                         </button>
+                     </div>
+                 </form>
+             </ng-template>
+
+             <ng-template #logcreate let-modal>
+                 <form (ngSubmit)="uploadPhotos(modal.dismiss)">
+                     <div class="modal-header">
+                         <h4 class="modal-title" id="modal-basic-title">Task Attachments</h4>
+                         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                             <span aria-hidden="true">&times;</span>
+                         </button>
+                     </div>
+                     <div class="modal-body">
+                         <div class="form-group">
+                             <div class="row">
+                                 <div class="col-md-12 form-group mb-3">
+                                     <label for="stores">Select Store</label>
+                                     <select class="form-control" [formControl]="stores" id="stores" name="stores">
+                                         <option [value]="item?.id" *ngFor="let item of store_list">
+                                             {{ item.attributes?.storename}}
+                                         </option>
+                                     </select>
+                                 </div>
+                             </div>
+                             <div class="row">
+                                 <div class="col-md-12 form-group mb-3">
+                                     <div class="input-group mb-3">
+                                         <div class="custom-file">
+                                             <input type="file" class="custom-file-input" id="inputfile1"
+                                                 [formControl]="inputfile1" (change)="onFileChanged($event,
+                                                 'view1')">
+                                             <label class="custom-file-label" for="inputGroupFile02"
+                                                 aria-describedby="inputGroupFileAddon02">{{ inputfile1.value ? inputfile1.value.name :
+                                'Select photo1' }}</label>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                             <div class="row">
+                                 <div class="col-md-12 form-group mb-3">
+                                     <div class="input-group mb-3">
+                                         <div class="custom-file">
+                                             <input type="file" class="custom-file-input" id="inputfile2"
+                                                 [formControl]="inputfile2" (change)="onFileChanged($event,
+                                                 'view2')">
+                                             <label class="custom-file-label" for="inputGroupFile02"
+                                                 aria-describedby="inputGroupFileAddon02">{{ inputfile2.value ? inputfile2.value.name :
+                                'Select photo2' }}</label>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="modal-footer">
+                         <button type="submit" class="btn btn-primary btn-rounded mt-3">Upload
+                         </button>
+                     </div>
+                 </form>
+             </ng-template>
+             <!-- Carousel Modal-->
+             <ng-template #galleryview let-modal>
+
+                 <div class="modal-header">
+                     <h4 class="modal-title" id="modal-basic-title">Task Attachments</h4>
+                     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                         <span aria-hidden="true">&times;</span>
+                     </button>
+                 </div>
+                 <div class="modal-body">
+                     <div class="row">
+                         <div class="col-md-12 mb-4">
+                             <div class="card text-left">
+                                 <div class="card-body">
+                                     <h4 class="card-title mb-3">Field Photos</h4>
+                                     <ngb-carousel>
+                                         <ng-template ngbSlide *ngFor="let log of logs;let i=index">
+                                             <div class="wrapper">
+                                                 <img [src]="env.backendfileURI +
+                                                        log.photo_filepath" alt="Random first slide" class="card-img">
+                                             </div>
+                                             <div class="carousel-caption">
+                                                 <p>{{log.latitude}}</p>
+                                                 <p>{{log.longitude}}</p>
+                                                 <p>{{log.logtype}}</p>
+                                                 <p>{{log.uploadeddatetime}}</p>
+                                             </div>
+                                         </ng-template>
+                                     </ngb-carousel>
+                                 </div>
+                             </div>
+                         </div>
+                         <!-- end of col -->
+                     </div>
+                 </div>
+             </ng-template>
+
+             <!--SUB TASK UPDATE MODAL-->
+             <ng-template #subtaskupdate let-modal>
+                 <form>
+                     <div class="modal-header">
+                         <h4 class="modal-title" id="modal-basic-title">Update Action Items</h4>
+                         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                             <span aria-hidden="true">&times;</span>
+                         </button>
+                     </div>
+                     <div class="modal-body">
+
+                         <div class="table-responsive">
+                             <table id="ul-contact-list" class="display table " style="width:100%">
+                                 <thead>
+                                     <tr>
+                                         <th></th>
+                                         <th></th>
+                                         <th>S.No</th>
+                                         <th>Name</th>
+                                         <th>Ref. Id</th>
+                                         <th>Address</th>
+                                         <th>City</th>
+                                         <th>State</th>
+                                         <th>Pincode</th>
+                                         <th>Date Assigned</th>
+                                         <th>Task Type</th>
+                                         <th>Status</th>
+                                         <th>Save</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                                     <ng-container *ngFor="let subtask of subtasks| paginate: { itemsPerPage: pageSize,
+                                             currentPage: page }; let i = index">
+                                         <tr>
+                                             <td>
+                                                 <button type="button" class="btn btn-success btn-icon m-1"
+                                                     (click)="openSubTaskAttachmentModal(subtasklogcreate,subtask)">
+                                                     <span class=" ul-btn__icon"><i class="i-Camera"></i></span>
+                                                 </button>
+
+                                             </td>
+                                             <td><button type="button" class="btn btn-success btn-icon m-1"
+                                                     (click)=" openSubTaskGalleryModal(subtaskgalleryview,subtask)"
+                                                     style="cursor:pointer">
+                                                     <i class="nav-icon i-Eye"></i>
+                                                 </button></td>
+                                             <td>
+                                                 {{i+1}}
+                                             </td>
+
+                                             <td>
+                                                 {{subtask.storeInfo.attributes.storename}}
+                                             </td>
+
+                                             <td>{{subtask.storeInfo.attributes.refno}}</td>
+                                             <td>{{subtask.storeInfo.attributes.doorno}},{{subtask.storeInfo.attributes.streetroad}}
+                                             </td>
+                                             <td>{{subtask.storeInfo.attributes.city.data.attributes.cityname}}</td>
+                                             <td>{{subtask.storeInfo.attributes.state.data.attributes.statename}}</td>
+                                             <td>{{subtask.storeInfo.attributes.pincode}}</td>
+                                             <td>{{task.attributes?.createdAt | date: 'dd/MM/yyyy'}}</td>
+                                             <td>{{subtask.type}}</td>
+                                             <td style="min-width: 120px;">
+                                                 <select class="form-control" id="status" name="status"
+                                                     [(ngModel)]="subtask.status">
+                                                     <option [attr.value]="item"
+                                                         *ngFor="let item of task_status; let in=index"
+                                                         [attr.selected]="item===subtask.status">
+                                                         {{item}}
+                                                     </option>
+                                                 </select>
+                                             </td>
+
+                                             <!--td>
+                                                 <button type="button" class="btn btn-success btn-icon m-1"
+                                                     (click)="openAttachmentModal(logcreate,task)">
+                                                     <span class=" ul-btn__icon"><i class="i-Edit"></i></span>
+                                                 </button>
+                                             </td-->
+
+                                             <td>
+                                                 <button type="button" class="btn round btn-primary btn-icon m-1"
+                                                     (click)="saveSubTask(subtaskupdate,subtask)">
+                                                     <span class=" ul-btn__icon"><i class="i-Yes"></i></span>
+                                                 </button>
+                                             </td>
+                                         </tr>
+
+                                     </ng-container>
+                                 </tbody>
+
+                             </table>
+                         </div>
+                     </div>
+                     <div class="modal-footer">
+                         <button type="button" class="btn btn-primary btn-rounded mt-3"
+                             (click)="modal.dismiss('close click')">close
+                         </button>
+                         <!--button type="button" class="btn btn-primary btn-rounded mt-3"
+                             (click)="saveSubTask(subtaskupdate,null);modal.dismiss('close click')">Save
+                         </button-->
+                     </div>
+                 </form>
+             </ng-template>
+
+             <ng-template #subtasklogcreate let-modal>
+                 <form (ngSubmit)="uploadPhotosSubTask(modal.dismiss)">
+                     <div class="modal-header">
+                         <h4 class="modal-title" id="modal-basic-title"> Attachments</h4>
+                         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                             <span aria-hidden="true">&times;</span>
+                         </button>
+                     </div>
+                     <div class="modal-body">
+                         <div class="form-group">
+
+                             <div class="row">
+                                 <div class="col-md-12 form-group mb-3">
+                                     <div class="input-group mb-3">
+                                         <div class="custom-file">
+                                             <input type="file" class="custom-file-input" id="inputfile1"
+                                                 [formControl]="inputfile1" (change)="onFileChanged($event,
+                                                 'view1')">
+                                             <label class="custom-file-label" for="inputGroupFile02"
+                                                 aria-describedby="inputGroupFileAddon02">{{ inputfile1.value ? inputfile1.value.name :
+                                'Select photo1' }}</label>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                             <div class="row">
+                                 <div class="col-md-12 form-group mb-3">
+                                     <div class="input-group mb-3">
+                                         <div class="custom-file">
+                                             <input type="file" class="custom-file-input" id="inputfile2"
+                                                 [formControl]="inputfile2" (change)="onFileChanged($event,
+                                                 'view2')">
+                                             <label class="custom-file-label" for="inputGroupFile02"
+                                                 aria-describedby="inputGroupFileAddon02">{{ inputfile2.value ? inputfile2.value.name :
+                                'Select photo2' }}</label>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="modal-footer">
+                         <button type="submit" class="btn btn-primary btn-rounded mt-3">Upload
+                         </button>
+                     </div>
+                 </form>
+             </ng-template>
+
+             <!-- Carousel Modal-->
+             <ng-template #subtaskgalleryview let-modal>
+
+                 <div class="modal-header">
+                     <h4 class="modal-title" id="modal-basic-title">Task Attachments</h4>
+                     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                         <span aria-hidden="true">&times;</span>
+                     </button>
+                 </div>
+                 <div class="modal-body">
+                     <div class="row">
+                         <div class="col-md-12 mb-4">
+                             <div class="card text-left">
+                                 <div class="card-body">
+                                     <h4 class="card-title mb-3">Field Photos</h4>
+                                     <ngb-carousel>
+                                         <ng-template ngbSlide *ngFor="let log of selectedSubTaskLog;let i=index">
+                                             <div class="wrapper">
+                                                 <img [src]="env.backendfileURI +
+                                                        log.photo_filepath" alt="Random first slide" class="card-img">
+                                             </div>
+                                             <div class="carousel-caption">
+                                                 <p>{{log.latitude}}</p>
+                                                 <p>{{log.longitude}}</p>
+                                                 <p>{{log.logtype}}</p>
+                                                 <p>{{log.uploadeddatetime}}</p>
+                                             </div>
+                                         </ng-template>
+                                     </ngb-carousel>
+                                 </div>
+                             </div>
+                         </div>
+                         <!-- end of col -->
+                     </div>
+                 </div>
+             </ng-template>

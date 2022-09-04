@@ -1,0 +1,385 @@
+<div class="breadcrumb">
+  <h1>Dashboard</h1>
+</div>
+<div class="separator-breadcrumb border-top"></div>
+
+<div class="row mb-5 justify-content-center flex-row-reverse">
+  <!-- <div class="col-md-6 mb-5">
+		<span class="text-28">$20038</span>
+		<p class="text-small text-muted m-0">Sales in current month</p>
+		<div echarts [options]="chartLineSmall1" [autoResize]="true" style="height: 65px;"></div>
+		<div class="d-flex justify-content-between mt-4">
+			<div class="flex-grow-1">
+				<span class="text-small">Pages / Visit</span>
+				<h5 class="m-0 font-weight-bold text-muted">2065</h5>
+			</div>
+			<div class="flex-grow-1">
+				<span class="text-small">New user</span>
+				<h5 class="m-0 font-weight-bold text-muted">465</h5>
+			</div>
+			<div class="flex-grow-1">
+				<span class="text-small">Last week</span>
+				<h5 class="m-0 font-weight-bold text-muted">23456</h5>
+			</div>
+		</div>
+	</div> -->
+  <!-- <div class="col-md-2 mb-5"></div> -->
+  <!-- <div class="col-md-4 mb-5">
+		<span class="text-28">$7038</span>
+		<p class="text-small text-muted m-0">Sales in current week</p>
+		<div echarts [options]="chartLineSmall1" [autoResize]="true" style="height: 65px;"></div>
+		<div class="d-flex justify-content-between mt-4">
+			<div class="flex-grow-1">
+				<span class="text-small">Pages / Visit</span>
+				<h5 class="m-0 font-weight-bold text-muted">2065</h5>
+			</div>
+			<div class="flex-grow-1">
+				<span class="text-small">New user</span>
+				<h5 class="m-0 font-weight-bold text-muted">465</h5>
+			</div>
+			<div class="flex-grow-1">
+				<span class="text-small">Last week</span>
+				<h5 class="m-0 font-weight-bold text-muted">23456</h5>
+			</div>
+		</div>
+	</div> -->
+
+  <!-- <div class="col-md-4">
+		<div class="d-flex justify-content-between mb-2">
+			<div class="flex-grow-1">
+				<p class="text-small text-muted m-0">Sales in current month</p>
+				<p class="text-24 mb-3"><i class="i-Arrow-Up-in-Circle text-success"></i> 80765</p>
+			</div>
+			<div class="flex-grow-1">
+				<p class="text-small text-muted m-0">Sales in last month</p>
+				<p class="text-24 mb-3"><i class="i-Arrow-Down-in-Circle text-danger"></i> 10765</p>
+			</div>
+		</div>
+		<div class="d-flex justify-content-between border-bottom p-2">
+			<div class="flex-grow-1">
+				<p class="text-12 text-muted m-0"><strong>2070</strong> Sales</p>
+			</div>
+			<div class="flex-grow-1">
+				<p class="text-12 text-muted m-0"><strong>100</strong> Expense</p>
+			</div>
+		</div>
+		<div class="d-flex justify-content-between border-bottom p-2">
+			<div class="flex-grow-1">
+				<p class="text-12 text-muted m-0"><strong>4000</strong> Sales</p>
+			</div>
+			<div class="flex-grow-1">
+				<p class="text-12 text-muted m-0"><strong>2000</strong> Expense</p>
+			</div>
+		</div>
+		<div class="d-flex justify-content-between p-2">
+			<div class="flex-grow-1">
+				<p class="text-12 text-muted m-0"><strong>3070</strong> Sales</p>
+			</div>
+			<div class="flex-grow-1">
+				<p class="text-12 text-muted m-0"><strong>1770</strong> Expense</p>
+			</div>
+		</div>
+	</div> -->
+  <!-- <div class="d-flex justify-content-between p-2">
+		Dashboard data representation goes here
+	</div> -->
+  <div class="col-lg-6 d-flex justify-content-center">
+    <div id="chart">
+      <apx-chart
+        [series]="chartOptions.series ? chartOptions.series : getInventories()"
+        [chart]="chartOptions.chart"
+        [labels]="chartOptions.labels"
+        [responsive]="chartOptions.responsive"
+      ></apx-chart>
+    </div>
+  </div>
+  <div class="col-lg-6 d-flex align-items-center">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12 border-bottom py-2">
+            <div class="row">
+              <div class="col-5 border-right d-flex align-items-center">
+                Totel Societies Enrolled
+              </div>
+              <div class="col-3 border-right d-flex align-items-center">
+                {{ invData.totel }}
+              </div>
+              <div class="col-4 text-center">
+                <button
+                  class="btn btn-primary"
+                  (click)="gotoDetail('inventory/list')"
+                >
+                  Details
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 border-bottom py-2">
+            <div class="row">
+              <div class="col-5 border-right d-flex align-items-center">
+                Approval Pending
+              </div>
+              <div class="col-3 border-right d-flex align-items-center">
+                {{ invData.pending }}
+              </div>
+              <div class="col-4 text-center">
+                <button
+                  class="btn btn-primary"
+                  [disabled]="!invData.pending"
+                  (click)="gotoDetail('inventory/list/Pending')"
+                >
+                  Details
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 py-2">
+            <div class="row">
+              <div class="col-5 border-right d-flex align-items-center">
+                Rejected
+              </div>
+              <div class="col-3 border-right d-flex align-items-center">
+                {{ invData.rejected }}
+              </div>
+              <div class="col-4 text-center">
+                <button
+                  class="btn btn-primary"
+                  [disabled]="!invData.rejected"
+                  (click)="gotoDetail('inventory/list/Rejected')"
+                >
+                  Details
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-12">
+    <h4 class="mb-3">All Inventories Details</h4>
+    <div class="card mb-4">
+      <ngx-datatable
+        class="material fullscreen"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="60"
+        [scrollbarH]="true"
+        [limit]="10"
+        [count]="10"
+        [rows]="rows"
+        (page)="pageChange($event)"
+      >
+        <ngx-datatable-column name="S.no" [width]="80">
+          <ng-template
+            let-rowIndex="rowIndex"
+            let-row="row"
+            ngx-datatable-cell-template
+          >
+            {{ rowIndex + 1 }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Pincode">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.attributes.pincode }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Society Name" [width]="280">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <p (click)="gotoInvDetail(row?.id)" style="cursor: pointer">
+              {{ row?.attributes?.inventoryname }}
+            </p>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Society Type">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.attributes.inventorytype }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Status">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span
+              *ngIf="
+                row.attributes?.status?.data?.attributes?.statusname ===
+                'Pending'
+              "
+              class="badge badge-info"
+            >
+              {{ row?.attributes?.status?.data?.attributes.statusname }}
+            </span>
+            <span
+              *ngIf="
+                row.attributes?.status?.data?.attributes?.statusname ===
+                'Approved'
+              "
+              class="badge badge-success"
+            >
+              {{ row?.attributes?.status?.data?.attributes.statusname }}
+            </span>
+            <span
+              *ngIf="
+                row.attributes?.status?.data?.attributes?.statusname ===
+                'Rework'
+              "
+              class="badge badge-warning"
+            >
+              {{ row?.attributes?.status?.data?.attributes.statusname }}
+            </span>
+            <span
+              *ngIf="
+                row.attributes?.status?.data?.attributes?.statusname ===
+                'Rejected'
+              "
+              class="badge badge-danger"
+            >
+              {{ row?.attributes?.status?.data?.attributes.statusname }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Contact Number">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.attributes?.contactno_1 }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Email" [width]="200">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row?.attributes?.contactemail_1 }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Actions">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div class="row">
+              <div class="col-12 text-center">
+                <button
+                  class="btn btn-icon bg-transparent"
+                  (click)="gotoInvDetail(row?.id)"
+                  *ngIf="
+                    row?.attributes?.status?.data?.attributes?.statusname ==
+                      'Approved' ||
+                    row?.attributes?.status?.data?.attributes?.statusname ==
+                      'Rejected'
+                  "
+                >
+                  <i class="i-Edit"></i>
+                </button>
+              </div>
+              <div class="col-12 text-center">
+                <button
+                  type="button"
+                  class="btn btn-icon bg-transparent"
+                  *ngIf="
+                    row?.attributes?.status?.data?.attributes?.statusname ===
+                      'Rework' && authService.role.value !== 'fieldexecutive'
+                  "
+                  popoverTitle="Rework Remarks"
+                  placement="left"
+                  ngbPopover="{{ row?.attributes?.comments[0]?.description }}"
+                >
+                  <span
+                    class="d-flex align-items-center justify-content-center"
+                  >
+                    <i class="i-Eye"></i
+                  ></span>
+                </button>
+              </div>
+              <div class="col-12">
+                <button
+                  class="btn btn-icon bg-transparent"
+                  *ngIf="
+                    authService.role.value == 'irradmin' &&
+                    row.attributes?.status?.data?.attributes?.statusname ==
+                      'Pending'
+                  "
+                  (click)="approveInventory(row, row?.id, 2)"
+                >
+                  <i
+                    class="i-Yes text-16 text-success"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Approve"
+                  ></i>
+                </button>
+                <button
+                  class="btn btn-icon bg-transparent"
+                  *ngIf="
+                    authService.role.value == 'irradmin' &&
+                    row.attributes?.status?.data?.attributes?.statusname ==
+                      'Pending'
+                  "
+                  (click)="openModal(reworkcomments, row)"
+                >
+                  <i
+                    class="i-Repeat-2 text-16 text-warning"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Rework"
+                  ></i>
+                </button>
+                <button
+                  class="btn btn-icon bg-transparent"
+                  *ngIf="
+                    authService.role.value == 'irradmin' &&
+                    row?.attributes?.status?.data?.attributes?.statusname ==
+                      'Pending'
+                  "
+                  (click)="approveInventory(row, row?.id, 4)"
+                >
+                  <i
+                    class="i-Close text-16 text-danger"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="Reject"
+                  ></i>
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>
+
+<ng-template #reworkcomments let-modal>
+  <form>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Enter comments</h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="type">Remarks</label>
+        <input
+          id="type"
+          id="comments"
+          name="comments"
+          required
+          class="form-control form-control-rounded"
+          type="text"
+          form
+          [(ngModel)]="comments"
+        />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        (click)="reworkInventory()"
+        class="btn btn-primary btn-rounded mt-3"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</ng-template>

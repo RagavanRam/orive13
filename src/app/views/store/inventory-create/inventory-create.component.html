@@ -1,0 +1,1312 @@
+<div class="pb-2">
+  <h4>Create new Inventory</h4>
+</div>
+<!-- <p>Creating new store will trigger an email to respective person to validate the account.</p> -->
+<h5 class="card-title container">Store Info.</h5>
+<div class="mb-3">
+  <ul class="nav nav-pills nav-fill">
+    <li class="nav-item">
+      <a
+        class="nav-link storeState-link-left"
+        (click)="chanegeStoreState()"
+        [ngClass]="{ active: storeState == 'retail' }"
+        >Retail</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link storeState-link-right"
+        (click)="chanegeStoreState()"
+        [ngClass]="{ active: storeState == 'society' }"
+        >Society</a
+      >
+    </li>
+  </ul>
+</div>
+<div class="">
+  <div class="" *ngIf="storeState === 'retail'; else societyState">
+    <div class="form-check h4 mb-3">
+      <input
+        class="form-check-input"
+        type="radio"
+        name="exampleRadios"
+        id="exampleRadios1"
+        value="auto"
+        #auto
+        (click)="use(auto.value)"
+      />
+      <label
+        class="form-check-label"
+        for="exampleRadios1"
+        style="color: #82522b"
+      >
+        Upload Inventory Data From Excel Sheet
+      </label>
+    </div>
+    <form class="col-md-12 g-3 was-validated" *ngIf="uploadType === 'auto'">
+      <!-- <h4 class="mb-3">Upload Inventory Data From Excel Sheet</h4> -->
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-md-4 form-group mb-3">
+              <label for="front_view_width" class="form-label"
+                >Select Excel Sheet</label
+              >
+              <div class="input-group">
+                <div class="custom-file">
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="fileData"
+                    aria-describedby="inputGroupFileAddon01"
+                    placeholder="Select excel file"
+                    (change)="readFile($event)"
+                    aria-describedby="fileDataHelp"
+                    accept=".xlsx"
+                  />
+                  <label class="custom-file-label" for="fileData">{{
+                    fileName ? fileName : "Select excel file"
+                  }}</label>
+                </div>
+              </div>
+              <!-- <label *ngIf="fv_file.errors?.['required']"
+                ><span class="text-danger text-10">
+                  Front Photo is required.</span
+                ></label
+              > -->
+            </div>
+            <div class="col-md-4 mt-2">
+              <button class="btn btn-primary" (click)="uploadData()">
+                Upload
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="form-check h4">
+      <input
+        class="form-check-input"
+        type="radio"
+        name="exampleRadios"
+        id="exampleRadios2"
+        value="manual"
+        #manual
+        (click)="use(manual.value)"
+        checked
+      />
+      <label
+        class="form-check-label"
+        for="exampleRadios2"
+        style="color: #82522b"
+      >
+        Upload Store Data Manually
+      </label>
+    </div>
+    <form
+      [formGroup]="createInventory"
+      class="col-md-12 g-3 was-validated"
+      (ngSubmit)="storeInfoSubmit(createInventory)"
+      *ngIf="uploadType === 'manual'"
+    >
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 form-group mb-3">
+              <label for="storeName" class="form-label">Store name *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="storeName"
+                placeholder="Enter your store name"
+                formControlName="storeName"
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="storeName.errors?.['required']"
+              >
+                Store name is required.
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="doorno">Door no. *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="doorno"
+                placeholder="Door no."
+                formControlName="doorno"
+                required
+              />
+              <div class="invalid-feedback" *ngIf="doorno.errors?.['required']">
+                Door no is required.
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="street">Street *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="street"
+                placeholder="Enter Street name"
+                formControlName="street"
+                required
+              />
+              <div class="invalid-feedback" *ngIf="street.errors?.['required']">
+                Street is required.
+              </div>
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label for="street">Address *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                placeholder="Enter Address"
+                formControlName="address"
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="address.errors?.['required']"
+              >
+                Address is required.
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="city">City *</label>
+              <div class="input-group">
+                <select
+                  class="form-control"
+                  formControlName="city"
+                  id="city"
+                  required
+                >
+                  <option [value]="item.id" *ngFor="let item of city_list">
+                    {{ item.attributes.cityname }}
+                  </option>
+                </select>
+                <!--div class="input-group-append">
+                              <button class="btn btn-secondary" (click)="openModal(cityname)" type="button">
+                                  <i class="icon-regular i-Add"></i>
+                              </button>
+                          </div-->
+                <div class="invalid-feedback" *ngIf="city.errors?.['required']">
+                  City is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="state">State *</label>
+              <div class="input-group">
+                <select
+                  class="form-control"
+                  formControlName="state"
+                  id="state"
+                  required
+                >
+                  <option [value]="item.id" *ngFor="let item of state_list">
+                    {{ item.attributes.statename }}
+                  </option>
+                </select>
+                <!--div class="input-group-append">
+                              <button class="btn btn-secondary" (click)="openModal(statename)" type="button">
+                                  <i class="icon-regular i-Add"></i>
+                              </button>
+                          </div-->
+                <div
+                  class="invalid-feedback"
+                  *ngIf="state.errors?.['required']"
+                >
+                  State is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="pinCode">Pin Code *</label>
+              <input
+                type="tel"
+                class="form-control"
+                id="pinCode"
+                placeholder="Enter pin code"
+                formControlName="pincode"
+                required
+                minlength="6"
+                maxlength="6"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="pincode.errors?.['required']"
+              >
+                Pin Code is required.
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="pincode.errors?.['minlength'] || pincode.errors?.['maxlength']"
+              >
+                Pincode should be 6 digits.
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="storeType">Store Type *</label>
+              <div class="input-group">
+                <select
+                  class="form-control"
+                  formControlName="store_type"
+                  id="storeType"
+                  required
+                >
+                  <option
+                    [value]="item.id"
+                    *ngFor="let item of store_type_list"
+                  >
+                    {{ item.attributes.typename }}
+                  </option>
+                </select>
+                <!--div class="input-group-append">
+                              <button class="btn btn-secondary" (click)="openModal(storeType)" type="button">
+                                  <i class="icon-regular i-Add"></i>
+                              </button>
+                          </div-->
+                <div
+                  class="invalid-feedback"
+                  *ngIf="store_type.errors?.['required']"
+                >
+                  Store type is required.
+                </div>
+              </div>
+            </div>
+            <agm-map
+              [latitude]="marker.lat"
+              [longitude]="marker.lng"
+              [zoom]="zoom"
+              (mapClick)="mapClicked($event)"
+            >
+              <agm-marker
+                [latitude]="marker.lat"
+                [longitude]="marker.lng"
+                [markerDraggable]="marker.draggable"
+                (dragEnd)="markerDragEnd($event)"
+              >
+                <agm-info-window [isOpen]="true" *ngIf="storeName.value">
+                  <strong style="color: #495057">{{ storeName.value }}</strong>
+                </agm-info-window>
+              </agm-marker>
+            </agm-map>
+          </div>
+        </div>
+      </div>
+      <h4 class="mb-3">Store Owner Info.</h4>
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 form-group mb-3">
+              <label for="storeName" class="form-label"
+                >Store Owner Name *</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="ownerName"
+                placeholder="Enter store owner name"
+                formControlName="ownerName"
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="ownerName.errors?.['required']"
+              >
+                Store owner name is required.
+              </div>
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label for="storeName" class="form-label">Mobile No.*</label>
+              <input
+                type="tel"
+                class="form-control"
+                id="ownerMobileNo"
+                placeholder="Enter store owner Mobile No."
+                formControlName="ownerMobileNo"
+                required
+                minlength="10"
+                maxlength="10"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="ownerMobileNo.errors?.['required']"
+              >
+                Store Owner Mobile No. is required.
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="ownerMobileNo.errors?.['minlength'] || ownerMobileNo.errors?.['maxlength']"
+              >
+                Mobile no. should be 10 digits.
+              </div>
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label for="phone">Alternate Phone No. </label>
+              <input
+                type="tel"
+                class="form-control"
+                id="phone"
+                placeholder="Enter phone number"
+                formControlName="phone_no"
+                minlength="10"
+                maxlength="10"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="phone_no.errors?.['minlength'] || phone_no.errors?.['maxlength']"
+              >
+                Mobile no. should be 10 digits.
+              </div>
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label for="storeName" class="form-label">GSTIN</label>
+              <input
+                type="text"
+                class="form-control"
+                id="storeName"
+                placeholder="Enter store gstin"
+                formControlName="gstin"
+              />
+              <!--div class="invalid-feedback" *ngIf="storeName.touched">
+                          Store GSTIN No. is required.
+                      </div-->
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label for="storeName" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="owneremail"
+                placeholder="Enter owner email address"
+                formControlName="owneremail"
+                #search
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <h4 class="mb-3">Photos</h4>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Front View</h5>
+          <div class="row">
+            <div class="col-md-4 form-group mb-3">
+              <label for="front_view_width" class="form-label"
+                >Select Front view image *</label
+              >
+              <div class="input-group">
+                <div class="custom-file">
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="photo"
+                    formControlName="fv_file"
+                    aria-describedby="inputGroupFileAddon01"
+                    placeholder="Select photo"
+                    (change)="onFileChanged($event, 'front_view')"
+                    aria-describedby="photoHelp"
+                    required
+                  />
+                  <label class="custom-file-label" for="photo">{{
+                    fv_file.value ? fv_file.value.name : "Select photo"
+                  }}</label>
+                </div>
+              </div>
+              <label *ngIf="fv_file.errors?.['required']"
+                ><span class="text-danger text-10">
+                  Front Photo is required.</span
+                ></label
+              >
+            </div>
+            <div class="col-md-4 form-group mb-3">
+              <label for="front_view_width" class="form-label"
+                >Select Front view close-up image *</label
+              >
+              <div class="input-group">
+                <div class="custom-file">
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="photo"
+                    aria-describedby="inputGroupFileAddon01"
+                    placeholder="Select photo"
+                    (change)="onFileChanged($event, 'front_view_close_up')"
+                    aria-describedby="photoHelp"
+                    required
+                  />
+                  <label class="custom-file-label" for="photo">{{
+                    fvcu_file.value ? fvcu_file.value.name : "Select photo"
+                  }}</label>
+                </div>
+              </div>
+              <label *ngIf="fvcu_file.errors?.['required']"
+                ><span class="text-danger text-10">
+                  Front Close up Photo is required.</span
+                ></label
+              >
+            </div>
+            <div class="col-md-4 form-group mb-3">
+              <label for="front_view_width" class="form-label"
+                >Select left side view image *</label
+              >
+              <div class="input-group">
+                <div class="custom-file">
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="photo"
+                    aria-describedby="inputGroupFileAddon01"
+                    placeholder="Select photo"
+                    (change)="onFileChanged($event, 'left_side')"
+                    aria-describedby="photoHelp"
+                    required
+                  />
+                  <label class="custom-file-label" for="photo">{{
+                    ls_file.value ? ls_file.value.name : "Select photo"
+                  }}</label>
+                </div>
+              </div>
+              <label *ngIf="ls_file.errors?.['required']"
+                ><span class="text-danger text-10"
+                  >Left side Photo is required.</span
+                ></label
+              >
+            </div>
+            <div class="col-md-4 form-group mb-3">
+              <label for="front_view_width" class="form-label"
+                >Select right side view image *</label
+              >
+              <div class="input-group">
+                <div class="custom-file">
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="rs_file"
+                    aria-describedby="inputGroupFileAddon01"
+                    placeholder="Select photo"
+                    (change)="onFileChanged($event, 'right_side')"
+                    aria-describedby="photoHelp"
+                    required
+                  />
+                  <label class="custom-file-label" for="photo">{{
+                    rs_file.value ? rs_file.value.name : "Select photo"
+                  }}</label>
+                </div>
+              </div>
+              <label *ngIf="rs_file.errors?.['required']"
+                ><span class="text-danger text-10"
+                  >Right side Photo is required.</span
+                ></label
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <h4 class="mb-3">Board Info.</h4>
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 form-group mb-3">
+              <label for="boardType">Board Type *</label>
+              <div class="input-group">
+                <select
+                  class="form-control"
+                  formControlName="board_type"
+                  id="boardType"
+                >
+                  <option
+                    [value]="item.id"
+                    *ngFor="let item of board_type_list"
+                  >
+                    {{ item.attributes.typename }}
+                  </option>
+                </select>
+                <!--div class="input-group-append">
+                              <button class="btn btn-secondary" (click)="openModal(boardtype)" type="button">
+                                  <i class="icon-regular i-Add"></i>
+                              </button>
+                          </div-->
+              </div>
+            </div>
+            <div class="col-md-4 form-group mb-3">
+              <label for="rs_width" class="form-label">Board width *</label>
+              <input
+                type="number"
+                class="form-control"
+                id="b_width"
+                placeholder="Board width in metres"
+                formControlName="b_width"
+                required
+              />
+              <div class="invalid-feedback" *ngIf="b_width.touched">
+                Width is required.
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="b_width.errors?.['required']"
+              >
+                width is required.
+              </div>
+            </div>
+            <div class="col-md-4 form-group mb-3">
+              <label for="rs_height" class="form-label">Board height *</label>
+              <input
+                type="number"
+                class="form-control"
+                id="b_height"
+                placeholder="Board height in metres"
+                formControlName="b_height"
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="b_height.errors?.['required']"
+              >
+                Height is required.
+              </div>
+            </div>
+            <div class="col-md-4 form-group mb-3">
+              <label for="front_view_width" class="form-label"
+                >Board Photo*</label
+              >
+              <div class="input-group">
+                <div class="custom-file">
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="photo"
+                    aria-describedby="inputGroupFileAddon01"
+                    placeholder="Select photo"
+                    (change)="onFileChanged($event, 'board_file')"
+                    aria-describedby="photoHelp"
+                  />
+                  <label class="custom-file-label" for="photo">{{
+                    board_file.value ? board_file.value.name : "Select photo"
+                  }}</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label for="street">Description *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="desc"
+                placeholder="Enter Description"
+                formControlName="desc"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <h4 class="mb-3">Store Owner Consent Form.</h4>
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 form-group mb-3">
+              <label for="consentform_field" class="form-label"
+                >Consent form upload*</label
+              >
+              <div class="input-group">
+                <div class="custom-file">
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="consentform_field"
+                    aria-describedby="inputGroupFileAddon01"
+                    placeholder="Select photo"
+                    (change)="onFileChanged($event, 'consentform_field')"
+                    aria-describedby="photoHelp"
+                    required
+                  />
+                  <label class="custom-file-label" for="photo">{{
+                    consentform_field.value
+                      ? consentform_field.value.name
+                      : "Select consent form"
+                  }}</label>
+                </div>
+              </div>
+              <label *ngIf="consentform_field.errors?.['required']"
+                ><span class="text-danger text-10"
+                  >Consent form is required</span
+                ></label
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="col-md-2 mt-3 mt-md-0 float-lg-right">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="!createInventory.valid"
+            >
+              Create Inventory
+            </button>
+          </div>
+          <div class="col-md-2 mt-3 mt-md-0">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="!createInventory.touched"
+              (click)="createInventory.reset()"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <ng-template #societyState>
+    <!-- <div class="form-check h4 mb-3">
+      <input
+        class="form-check-input"
+        type="radio"
+        name="exampleRadios"
+        id="exampleRadios1"
+        value="auto"
+        #auto
+        (click)="use(auto.value)"
+      />
+      <label
+        class="form-check-label"
+        for="exampleRadios1"
+        style="color: #82522b"
+      >
+        Upload Inventory Data From Excel Sheet
+      </label>
+    </div>
+    <form class="col-md-12 g-3 was-validated" *ngIf="uploadType === 'auto'">
+      <h4 class="mb-3">Upload Inventory Data From Excel Sheet</h4>
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-md-4 form-group mb-3">
+              <label for="front_view_width" class="form-label"
+                >Select Excel Sheet</label
+              >
+              <div class="input-group">
+                <div class="custom-file">
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="fileData"
+                    aria-describedby="inputGroupFileAddon01"
+                    placeholder="Select excel file"
+                    (change)="readFile($event)"
+                    aria-describedby="fileDataHelp"
+                    accept=".xlsx"
+                  />
+                  <label class="custom-file-label" for="fileData">{{
+                    fileName ? fileName : "Select excel file"
+                  }}</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mt-2">
+              <button class="btn btn-primary" (click)="uploadData()">
+                Upload
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form> -->
+    <div class="form-check h4">
+      <input
+        class="form-check-input"
+        type="radio"
+        name="exampleRadios"
+        id="exampleRadios2"
+        value="manual"
+        #manual
+        (click)="use(manual.value)"
+        checked
+      />
+      <label
+        class="form-check-label"
+        for="exampleRadios2"
+        style="color: #82522b"
+      >
+        Upload Store Data Manually
+      </label>
+    </div>
+    <form class="col-md-12 g-3 was-validated" [formGroup]="societyForm" (ngSubmit)="societyFormSubmit()" *ngIf="uploadType === 'manual'">
+      <div class="card mb-3" formGroupName="societyInfo">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 form-group mb-3">
+              <label for="societyName" class="form-label">Society Name *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="societyName"
+                placeholder="Enter your society name"
+                formControlName="societyName"
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="societyForm.get('societyInfo.societyName').errors?.['required']"
+              >
+                Store name is required.
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="societyType">Society Type *</label>
+              <div class="input-group">
+                <select class="form-control" id="societyType" formControlName="societyType">
+                  <option
+                    [value]="item.toLowerCase()"
+                    *ngFor="let item of societyTypeList"
+                  >
+                    {{ item }}
+                  </option>
+                </select>
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="societyForm.get('societyInfo.societyType').errors?.['required']"
+              >
+                Store name is required.
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="NumberOfFlatsOrHouses">No of Flats/ Houses *</label>
+              <input
+                type="number"
+                class="form-control"
+                id="NumberOfFlatsOrHouses"
+                placeholder="Enter the No of Flats/ Houses"
+                formControlName="no_of_flates"
+                required
+              />
+              <div class="invalid-feedback" *ngIf="societyForm.get('societyInfo.societyName').errors?.['required']">
+                No of Flats/ Houses is required.
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="NumberOfPhases">No of totel phases *</label>
+              <input
+                type="number"
+                class="form-control"
+                id="NumberOfPhases"
+                (change)="onAddPhaseBlocksFields()"
+                formControlName="no_phases"
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="societyForm.get('societyInfo.no_phases').errors?.['required']"
+              >
+                Store name is required.
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="row" formArrayName="phase_blocks">
+                <div class="col-lg-6 form-group mb-3" *ngFor="let phaseBlocksControl of phaseBlocksControls; index as n">
+                  <label for="NumberOfBlocksForPhase">No of Blocks in phase {{n + 1}} *</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="NumberOfBlocksForPhase"
+                    formControlName="{{n}}"
+                    (change)="onAddBlocksToPhase(n)"
+                    required
+                  />
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="societyForm.get(['societyInfo', 'phase_blocks', n]).errors?.['required']">
+                    No of Blocks is required for Phase {{n+1}}.
+                   </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="NumberOfBlocks">No of total Blocks *</label>
+              <input
+                type="number"
+                class="form-control"
+                id="NumberOfBlocks"
+                min="1"
+                disabled
+                formControlName="no_blocks"
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="societyForm.get('societyInfo.no_blocks').errors?.['required']">
+                  Number of Blocks is required.
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="doorno">Door no./ Apartment no. *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="doorno"
+                placeholder="Door no."
+                formControlName="door_no"
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="societyForm.get('societyInfo.door_no').errors?.['required']">
+                  Number of Blocks is required.
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="street">Street *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="street"
+                placeholder="Enter Street name"
+                formControlName="street"
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="societyForm.get('societyInfo.street').errors?.['required']">
+                  Street Name is required.
+              </div>
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label for="street">Address *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                placeholder="Enter Address"
+                formControlName="address"
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="societyForm.get('societyInfo.address').errors?.['required']">
+                  address is required.
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="city">City *</label>
+              <div class="input-group">
+                <select class="form-control" id="city" formControlName="city" required>
+                  <option [value]="item.id" *ngFor="let item of city_list">
+                    {{ item.attributes.cityname }}
+                  </option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="societyForm.get('societyInfo.city').errors?.['required']">
+                      City Name is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="state">State *</label>
+              <div class="input-group">
+                <select class="form-control" id="state" formControlName="state" required>
+                  <option [value]="item.id" *ngFor="let item of state_list">
+                    {{ item.attributes.statename }}
+                  </option>
+                </select>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="societyForm.get('societyInfo.state').errors?.['required']">
+                    State name is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 form-group mb-3">
+              <label for="pinCode">Pin Code *</label>
+              <input
+                type="number"
+                class="form-control"
+                id="pinCode"
+                placeholder="Enter pin code"
+                minlength="6"
+                maxlength="6"
+                formControlName="pincode"
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="societyForm.get('societyInfo.pincode').errors?.['required']">
+                  Pincode is required.
+              </div>
+            </div>
+
+            <agm-map
+              [latitude]="marker.lat"
+              [longitude]="marker.lng"
+              [zoom]="zoom"
+              (mapClick)="mapClicked($event)"
+            >
+              <agm-marker
+                [latitude]="marker.lat"
+                [longitude]="marker.lng"
+                [markerDraggable]="marker.draggable"
+                (dragEnd)="markerDragEnd($event)"
+              >
+                <agm-info-window [isOpen]="true" *ngIf="storeName.value">
+                  <strong style="color: #495057">{{ storeName.value }}</strong>
+                </agm-info-window>
+              </agm-marker>
+            </agm-map>
+          </div>
+        </div>
+      </div>
+      <h4 class="mb-3">Contact Person Info.</h4>
+      <div class="card mb-3" formGroupName="contactPersonInfo">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                  <label for="contactPersonName" class="form-label"
+                    >Contact Person Name *</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="contactPersonName"
+                    placeholder="Enter Contact Person name"
+                    formControlName="contactPersonName"
+                    required
+                  />
+                  <div class="invalid-feedback" *ngIf="societyForm.get(['contactPersonInfo', 'contactPersonName']).errors?.['required']">
+                    Contact Person Name is required.
+                  </div>
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                  <label for="contactPersonDesignation" class="form-label"
+                    >Contact Person Designation *</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="contactPersonDesignation"
+                    placeholder="Enter Contact Person Designation"
+                    formControlName="contactDesignation"
+                    required
+                  />
+                  <div class="invalid-feedback" *ngIf="societyForm.get(['contactPersonInfo', 'contactDesignation']).errors?.['required']">
+                    inventory Type is required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label for="PhoneNo" class="form-label">Phone No.*</label>
+              <input
+                type="text"
+                class="form-control"
+                id="PhoneNo"
+                placeholder="Enter contact Person Phone No."
+                minlength="10"
+                maxlength="10"
+                formControlName="contact_no_1"
+                required
+              />
+              <div class="invalid-feedback" *ngIf="societyForm.get(['contactPersonInfo', 'contactPersonName']).errors?.['required']">
+                Phone Number is required.
+              </div>
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label for="AlternatePhoneNo">Alternative Phone No. </label>
+              <input
+                type="tel"
+                class="form-control"
+                id="AlternatePhoneNo"
+                placeholder="Enter Alternative phone number"
+                formControlName="phone_no"
+                minlength="10"
+                maxlength="10"
+                formControlName="contact_no_2"
+              />
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label for="storeName" class="form-label">Email. *</label>
+              <input
+                type="email"
+                class="form-control"
+                id="owneremail"
+                placeholder="Enter Contact Person Email Address"
+                formControlName="email_1"
+                required
+              />
+              <div class="invalid-feedback" *ngIf="societyForm.get(['contactPersonInfo', 'email_1']).errors?.['required']">
+                Email is required.
+              </div>
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label for="storeName" class="form-label"
+                >Alternative Email.</label
+              >
+              <input
+                type="email"
+                class="form-control"
+                id="owneremail"
+                placeholder="Enter Alternative Contact Person Email Address"
+                formControlName="email_2"
+                #search
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <h4 class="mb-3">Phases Info.</h4>
+      <div class="" formArrayName="phases">
+        <div class="card mb-3" *ngFor="let Phasecontrol of PhasesControls; index as i" [formGroupName]="i">
+          <!-- <h5 class="text-center mt-3">Phase No. 1</h5> -->
+          <div class="card-body">
+            <div class="row align-items-end">
+              <div class="col-md-6">
+                <label for="phaseName" class="form-label">Phase {{i + 1}}</label>
+                <input type="text" class="form-control" id="phaseName" placeholder="Enter Phase Name" formControlName="phaseName" required/>
+                <div class="invalid-feedback" *ngIf="societyForm.get(['phases', i, 'phaseName']).errors?.['required']">
+                  Phase Name is required.
+                </div>
+              </div>
+              <div class="col-12" formArrayName="blocks">
+                <div class="col-12 mt-3" *ngFor="let blockControl of getblocksControls(Phasecontrol); index as j" [formGroupName]="j">
+                  <div class="row">
+                    <div class="row align-items-start">
+                      <div class="col-md-6">
+                        <label for="" class="form-label">Block {{j + 1}} Name</label>
+                        <input type="text" class="form-control" placeholder="Enter Block Name" formControlName="blockName" required/>
+                        <div class="invalid-feedback" *ngIf="societyForm.get(['phases', i, 'blocks', j, 'blockName']).errors?.['required']">
+                          Block Name is required.
+                        </div>
+                      </div>
+                      <div class="col-12 mt-3" formArrayName="inventories">
+                        <div class="row" *ngFor="let inventoryControl of getinventoryControls(blockControl); index as k" [formGroupName]="k">
+                          <div class="col">
+                            <div class="card mb-3">
+                              <div class="card-body">
+                                <div class="row align-items-center">
+                                  <div class="col-xl-8">
+                                    <div class="row">
+                                      <div class="col-xl-6 mb-3 mb-xl-0">
+                                        <input type="text" class="form-control" placeholder="Poster Type" formControlName="inventoryType" required />
+                                        <div class="invalid-feedback" *ngIf="societyForm.get(['phases', i, 'blocks', j, 'inventories', k, 'inventoryType']).errors?.['required']">
+                                          inventory Type is required.
+                                        </div>
+                                      </div>
+                                      <div class="col-xl-6 mb-3 mb-xl-0">
+                                        <div class="input-group">
+                                          <div class="custom-file">
+                                            <input
+                                              type="file"
+                                              class="custom-file-input"
+                                              id="fileData"
+                                              aria-describedby="inputGroupFileAddon01"
+                                              placeholder="Upload InventoryImage"
+                                              formControlName="inventoryImage"
+                                              accept="image/png, image/jpeg"
+                                              required
+                                              (change)="setImgPreviewControlValue($event, imgPreview, i, j, k)"
+                                            />
+                                            <label
+                                              class="custom-file-label"
+                                              for="fileData"
+                                              >Inventory Image</label
+                                            >
+                                          </div>
+                                        </div>
+                                        <label *ngIf="societyForm.get(['phases', i, 'blocks', j, 'inventories', k, 'inventoryImage']).errors?.['required']">
+                                          <span class="text-danger text-10">
+                                            Inventory Image is required.</span>
+                                        </label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-xl-2 mb-2 mb-xl-0 text-center">
+                                    <img src="https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg" alt="" class="img-fluid" #imgPreview>
+                                  </div>
+                                  <div class="col-xl-2 text-right text-xl-center">
+                                    <button class="btn btn-danger mr-2 rounded-circle" type="button" [disabled]="k == 0" (click)="onDeleteInventory(i, j, k)">X</button>
+                                    <button class="btn btn-success rounded-circle" type="button" (click)="onAddInventory(i, j, k)">+</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-body text-center">
+              <button class="btn btn-primary" [disabled]="societyForm.invalid">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+</div>
+<!-- STORE TYPE MODEL -->
+<ng-template #storeType let-modal>
+  <form (ngSubmit)="createStoreType(modal.dismiss)">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Store Type creation</h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="type">Store Type</label>
+        <input
+          id="type"
+          class="form-control form-control-rounded"
+          type="text"
+          [formControl]="newStoreType"
+        />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary btn-rounded mt-3">
+        Create Type
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<!-- CITY TYPE MODAL -->
+<ng-template #cityname let-modal>
+  <form (ngSubmit)="createCity(modal.dismiss)">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">City creation</h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="type">City Name</label>
+        <input
+          id="type"
+          class="form-control form-control-rounded"
+          type="text"
+          [formControl]="newCity"
+        />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary btn-rounded mt-3">
+        Create City
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<!-- STATE TYPE MODAL -->
+<ng-template #statename let-modal>
+  <form (ngSubmit)="createState(modal.dismiss)">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">State creation</h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="type">State Name</label>
+        <input
+          id="type"
+          class="form-control form-control-rounded"
+          type="text"
+          [formControl]="newState"
+        />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary btn-rounded mt-3">
+        Create State
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<!-- STATE TYPE MODAL -->
+<ng-template #boardtype let-modal>
+  <form (ngSubmit)="createBoardType(modal.dismiss)">
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Board Type creation</h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="type">Board Type</label>
+        <input
+          id="type"
+          class="form-control form-control-rounded"
+          type="text"
+          [formControl]="newboardType"
+        />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary btn-rounded mt-3">
+        Create Board Type
+      </button>
+    </div>
+  </form>
+</ng-template>

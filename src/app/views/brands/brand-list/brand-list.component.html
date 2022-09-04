@@ -1,0 +1,55 @@
+<div class="breadcrumb">
+    <div>
+        <h1 style="display: inline-block;">Brands</h1>
+    </div>
+    <div class="ml-3" style="flex-grow: 2;">
+        <input type="text" class="form-control" id="search" placeholder="search stores" #search (input)="searchStore()">
+    </div>
+</div>
+
+<div class="separator-breadcrumb border-top">
+    <div class="row my-4">
+        <div class="col-md-12">
+            <div class="card">
+                <ngx-datatable style="height: 43rem; box-shadow: none" class="material fullscreen"
+                 [headerHeight]="50" [footerHeight]="50" [rowHeight]="60" [scrollbarV]="true" [limit]="10" [rows]="brands">
+                 <ngx-datatable-column name="S.no" [width]="80">
+                    <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
+                        {{(rowIndex + 1)}}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Brand Name" [width]="200">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row?.attributes?.brandname }}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Contact Person Name" [width]="280">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{row?.attributes?.contact_person? row?.attributes?.contact_person: 'Not Available'}}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Contact Number">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{row?.attributes?.contact_phone? row?.attributes?.contact_phone: 'Not Available'}}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Contact Email" [width]="280">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{row?.attributes?.contact_email? row?.attributes?.contact_email: 'Not Available'}}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Gstin Number">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{row?.attributes?.gstin? row?.attributes?.gstin: 'Not Available'}}
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Edit" [width]="180">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <button class="btn btn-secondary"><i class="nav-icon i-File-Edit"></i></button>
+                    </ng-template>
+                </ngx-datatable-column>
+                </ngx-datatable>
+            </div>
+        </div>
+    </div>
+</div>

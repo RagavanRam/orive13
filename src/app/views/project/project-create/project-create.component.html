@@ -1,0 +1,709 @@
+<div class="pb-2">
+    <h4>Create new Project</h4>
+</div>
+<!-- <p>Creating new store will trigger an email to respective person to validate the account.</p> -->
+<div class="card mb-3" *ngIf="editMode===true">
+    <div class="card-body">
+        <h4 class="mb-3">Status</h4>
+        <div class="row">
+            <div class="col-md-6 form-group mb-3">
+                <div class="btn-group" ngbDropdown role="group" aria-label="Select all" placement="right">
+                    <button class="btn btn-primary btn-rounded" [disabled]="disable==true"
+                        ngbDropdownToggle>{{project?.attributes?.status}}</button>
+                    <div class="dropdown-menu" ngbDropdownMenu>
+                        <button class="dropdown-item"
+                            (click)="updateProjectStatus('Created',project.id)">Created</button>
+                        <hr class="dropdown-divider">
+                        <button class="dropdown-item"
+                            (click)="updateProjectStatus('Installed',project.id)">Installed</button>
+                        <hr class="dropdown-divider">
+                        <button class="dropdown-item" (click)="updateProjectStatus('Live',project.id)">Live</button>
+                        <hr class="dropdown-divider">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 form-group mb-3"></div>
+            <div class="col-md-3 form-group mb-3">
+                <div class="btn-group" ngbDropdown role="group" aria-label="Select all" placement="bottom">
+                    <button class="btn btn-secondary m-1 float-md-right" ngbDropdownToggle>Actions <i
+                            class="nav-icon i-Pen-2"></i>
+                    </button>
+                    <div class="dropdown-menu" ngbDropdownMenu>
+                        <button class="dropdown-item" [disabled]="disable==false" (click)="enableEdit()"
+                            style="cursor: pointer;">Edit</button>
+                        <hr class="dropdown-divider">
+                        <button class="dropdown-item" [disabled]="disable==true" (click)="save()"
+                            style="cursor: pointer;">Save
+                        </button>
+                        <hr class="dropdown-divider">
+                        <button class="dropdown-item" (click)="generateRecce()" style="cursor: pointer;">Download
+                            Recce</button>
+                        <hr class="dropdown-divider">
+                        <button class="dropdown-item" (click)="generateInstallation()" style="cursor: pointer;">Download
+                            Installation Report</button>
+                        <hr class="dropdown-divider">
+                        <button class="dropdown-item" (click)="generateAudit()" style="cursor: pointer;">Download
+                            Audit Report</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form [formGroup]="createproject" class="col-md-12 g-3 was-validated" (ngSubmit)="projectInfoSubmit(createproject)"
+    novalidate>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active': view == 'Project Detail'}" style="cursor: pointer;" id="home-tab" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true" (click)="view = 'Project Detail'">Project Detail</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': view == 'Financial Detail'}" style="cursor: pointer;" id="home-tab" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true" (click)="view = 'Financial Detail'">Financial Detail</a>
+          </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active': view == 'Stores'}" style="cursor: pointer;" id="profile-tab" data-toggle="tab" role="tab" aria-controls="profile" aria-selected="false" (click)="view = 'Stores'">Inventories</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active': view == 'Tasks'}" style="cursor: pointer;" id="contact-tab" data-toggle="tab" role="tab" aria-controls="contact" aria-selected="false" (click)="view = 'Tasks'">Tasks</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade" [ngClass]="{'active show': view == 'Project Detail'}" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <!-- <h5 class="card-title">Project Details</h5> -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="storeName" class="form-label">Project Name/Title *</label>
+                            <input type="text" class="form-control" id="projectname" placeholder="Enter project name"
+                                formControlName="projectname" required>
+                            <div class="invalid-feedback" *ngIf="projectname.touched">
+                                Project name is required.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="doorno">RefId *</label>
+                            <input type="text" class="form-control" id="projrefid" placeholder="Reference Id"
+                                formControlName="projrefid" required>
+                            <div class="invalid-feedback" *ngIf="projrefid.touched">
+                                Reference no. is required.
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="city">Brand *</label>
+                            <div class="input-group">
+                                <select class="form-control" formControlName="brand" id="brand" required>
+                                    <option [value]="item.id" *ngFor="let item of brand_list"> {{ item.attributes.brandname  }}
+                                    </option>
+                                </select>
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary" type="button" (click)="openModal(brandcreate,undefined)">
+                                        <i class="icon-regular i-Add"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="invalid-feedback" *ngIf="brand.touched">
+                                Brand is required.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="street">Description *</label>
+                            <input type="text" class="form-control" id="desc" placeholder="Enter Description"
+                                formControlName="desc">
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="date">Start Date *</label>
+                            <input type="date" class="form-control" id="startdate" placeholder="Enter project start date"
+                                formControlName="startdate" required (change)="durationChanges()">
+                            <div class="invalid-feedback" *ngIf="startdate.touched">
+                                start date is required.
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="date">End Date *</label>
+                            <input type="date" class="form-control" id="enddate" placeholder="Enter project End date"
+                                formControlName="enddate" required (change)="durationChanges()">
+                            <div class="invalid-feedback" *ngIf="enddate.touched">
+                                End date is required.
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="auditinterval">Audit Interval (in days) *</label>
+                            <input type="number" class="form-control" id="auditinterval" name="auditinterval"
+                                placeholder="Enter audit interval" formControlName="auditinterval" required>
+                            <div class="invalid-feedback" *ngIf="auditinterval.touched">
+                                Audit Interval is required.
+                            </div>
+                            <div class="invalid-feedback" *ngIf="auditinterval.errors?.['minlength']">
+                                Audit interval should be min. of one digit.
+                            </div>
+                            <div class="invalid-feedback" *ngIf="auditinterval.errors?.['maxlength']">
+                                Audit interval should be max of 3 digits only.
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="assigned">Assigned To</label>
+                            <select class="form-control" [formControl]="assigned" id="assigned">
+                                <option [value]="item.attributes.users_permissions_user.data.id" *ngFor="let item of user_list">
+                                    {{ item.attributes.firstname}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" [ngClass]="{'active show': view == 'Financial Detail'}" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="unitcost" class="form-label">Unit Cost</label>
+                            <input type="number" class="form-control" id="unitcost" [value]="unitcost.value"
+                                formControlName="unitcost" required (keyup)="unitCostChanges()">
+                            <div class="invalid-feedback" *ngIf="unitcost.touched">
+                                Unit Cost is required.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="noOfUnits">No of Units</label>
+                            <input type="number" class="form-control" id="noOfUnits" [value]="no_of_units.value"
+                                formControlName="no_of_units" required disabled>
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="duration">Duration</label>
+                            <input type="text" class="form-control" id="duration" [value]="duration.value"
+                                formControlName="duration" required disabled>
+                        </div>
+
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="total">Total Project Cost</label>
+                            <input type="text" class="form-control" id="total" [value]="totel_cost.value"
+                                formControlName="totel_cost" required disabled>
+                            <div class="invalid-feedback" *ngIf="totel_cost.touched">
+                                Totel Project Cost is required.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" [ngClass]="{'active show': view == 'Stores'}" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="card mb-3">
+                <!-- <h4 class="mb-3">Stores</h4> -->
+                <div class="card-body">
+                    <div class="float-right">
+                        <button [disabled]="disable==true" type="button" class="btn btn-primary"
+                            (click)="openModal(assigninventory,null)">Add
+                            Stores</button>
+                    </div>
+                    <div class="table-responsive">
+                        <app-datagrid *ngIf="storedataloaded" [list]="stores_selected" [headers]="grid_headers"
+                            [fieldnames]="field_names" [filterfields]="filter_fields" [multiselect]="false" [showDelete]="true"
+                            [disable]="disable" (saveClicked)="showMessage();" (deleteClicked)="deleteRow($event)" (statusChange)="storeStatus($event)">
+                        </app-datagrid>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" [ngClass]="{'active show': view == 'Tasks'}" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="float-right">
+                        <button [disabled]="disable==true" type="button" class="btn btn-primary"
+                            (click)="openModal(taskcreate,null)">Create
+                            Task</button>
+                    </div>
+                    <!-- <h5 class=" card-title">Tasks</h5> -->
+                    <div class="table-responsive">
+                        <table id="ul-contact-list" class="display table" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>View</th>
+                                    <th *ngIf="!disable">Save Action Item</th>
+                                    <th>Task Type</th>
+                                    <th>Assigned To</th>
+                                    <th>Date-Planned</th>
+                                    <th>Date-Completed</th>
+                                    <th>Completion Status</th>
+                                    <th *ngIf="!disable">Actions</th>
+                                    <!--th>Attachments</th-->
+                                    <th *ngIf="!disable">Delete</th>
+        
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let task of task_list  | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                                    <td><button type="button" class="btn btn-primary btn-icon m-1"
+                                            (click)="openSubTaskModal(subtaskupdate,task)">
+                                            <span class=" ul-btn__icon"><i class="i-Arrow-Right"></i></span>
+                                        </button></td>
+                                    <td *ngIf="!disable">
+                                        <button type="button" class="btn btn-primary btn-icon m-1" (click)="saveSubTask(task)"
+                                            style="cursor:pointer">
+                                            <i class="nav-icon i-Yes"></i>
+                                        </button>
+                                    </td>
+        
+                                    <td>{{task.attributes?.type}}</td>
+                                    <td>{{task.attributes?.assignedusername}}</td>
+                                    <td>{{task.attributes?.completiondate_planned | date:'dd-MM-yyyy'}}</td>
+                                    <td>{{task.attributes?.completiondate_actual | date:'dd-MM-yyyy'}}</td>
+        
+                                    <td><span [ngClass]="{
+                                                             'badge badge-primary mr-1' :
+                                                             task?.attributes?.status ==='Assigned',
+                                                            'badge badge-secondary mr-1' :
+                                                            task?.attributes?.status ===
+                                                            'InProgress','badge badge-success mr-1' :
+                                                            project?.attributes?.status ===
+                                                            'Completed'}">
+                                            {{task.attributes?.status}}</span>
+                                    </td>
+                                    <td *ngIf="!disable">
+                                        <button type="button" class="btn btn-warning btn-icon m-1"
+                                            (click)="openModal(taskcreate,task)" style="cursor:pointer">
+                                            <i class="nav-icon i-Pen-2 "></i>
+                                        </button>
+        
+                                        <!--a href="" class="ul-link-action text-danger mr-1"
+                                                                 data-toggle="tooltip" data-placement="top"
+                                                                 title="Want To Delete !!!">
+                                                                 <i class="i-Eraser-2"></i>
+                                                             </a-->
+                                    </td>
+                                    <!--td>
+                                        <button type="button" class="btn btn-success btn-icon m-1"
+                                            (click)=" openModal(galleryview,task)" style="cursor:pointer">
+                                            <i class="nav-icon i-Eye"></i>
+                                        </button>
+        
+                                    </td-->
+                                    <td *ngIf="!disable">
+                                        <button type="button" class="btn btn-danger btn-icon m-1" (click)="deleteTask(task)"
+                                            style="cursor:pointer">
+                                            <i class="nav-icon i-Remove "></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+        
+                        </table>
+                    </div>
+                    <!-- PAGINATION CONTROL -->
+                    <div class="col-md-12 mt-3" *ngIf="task_list?.length">
+                        <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel="">
+                        </pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+    <div class="card mb-3" *ngIf="view != 'Tasks'">
+        <div class="card-body">
+            <div class="float-left">
+                <button *ngIf="editMode===true" [disabled]="disable==true" type="button" class="btn btn-primary"
+                    (click)="disableEdit()">Cancel
+                </button>
+            </div>&nbsp;
+            <div class="float-right">
+                <button *ngIf="editMode===false" type="submit" class="btn btn-primary">Create
+                    Project</button>
+                <button *ngIf="editMode===true" [disabled]="disable==true" type="submit" class="btn btn-primary">Save
+                    Project</button>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- BRAND TYPE MODEL -->
+<ng-template #brandcreate let-modal>
+    <form (ngSubmit)="createBrand(modal.dismiss)">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Brand</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="type">Brand Name</label>
+                        <input id="type" class="form-control" type="text" id="newBrand" name="newBrand"
+                            [formControl]="newBrand" required>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="newBrand.touched">
+                        Brand name is required.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="type">Contact Person Name</label>
+                        <input id="type" class="form-control" type="text" [formControl]="newContactPerson">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="type">Contact Email</label>
+                        <input id="type" class="form-control" type="text" [formControl]="newContactEmail">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="type">Contact Mobile No.</label>
+                        <input id="type" class="form-control" type="text" [formControl]="newContactMobile">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="type">GSTIN</label>
+                        <input id="type" class="form-control" type="text" [formControl]="newgstin">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary btn-rounded mt-3">Create
+                Brand</button>
+        </div>
+    </form>
+</ng-template>
+<!-- BRAND TYPE MODEL -->
+
+<!--TASK CREATE MODAL-->
+<ng-template #taskcreate let-modal>
+    <form [formGroup]="taskFrmGp" (ngSubmit)="createTask(modal.dismiss)">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Task</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+            </div>
+            <div class="row">
+                <div class="col-md-9 form-group mb-3">
+                    <label for="tasktype">Task Type</label>
+                    <select class="form-control" [formControl]="tasktype" id="tasktype" name="tasktype"
+                        (change)="taskTypeChanged($event.target.value)">
+                        <option [value]="item" *ngFor="let item of task_type_list">
+                            {{ item}}
+                        </option>
+                    </select>
+                </div>
+                <div class="invalid-feedback" *ngIf="tasktype.touched">
+                    Task Type is required.
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-9 form-group mb-3">
+                    <label for="taskdec">Task Description</label>
+                    <textarea id="taskdec" class="form-control" type="text" [formControl]="taskdec" multiple>
+                        </textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label for="t_plandateofcomp">Planned date of completion.</label>
+                    <input id="t_plandateofcomp" class="form-control" type="date" [formControl]="t_plandateofcomp">
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="t_actualdateofcomp">Actual date of completion.</label>
+                    <input id="t_actualdateofcomp" class="form-control" type="date" [formControl]="t_actualdateofcomp"
+                        id="t_actualdateofcomp" name="t_actualdateofcomp">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label for="tstatus">Status</label>
+                    <select class="form-control" [formControl]="tstatus" id="tstatus" name="tstatus">
+                        <option [value]="item" *ngFor="let item of task_status">
+                            {{ item}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-6 form-group mb-3">
+                    <label for="tassigned">Assign</label>
+                    <select class="form-control" [formControl]="tassigned" id="tassigned" name="tassigned">
+                        <option [value]="item.attributes.users_permissions_user.data.id"
+                            *ngFor="let item of user_list_ins">
+                            {{  item.attributes.users_permissions_user.data.attributes.username}}
+                        </option>
+                    </select>
+                    <!--select *ngIf="showFEUsers" class="form-control" [formControl]="tassigned" id="tassigned"
+                        name="tassigned">
+                        <option [value]="item.attributes.users_permissions_user.data.id"
+                            *ngFor="let item of user_list_fe">
+                            {{  item.attributes.users_permissions_user.data.attributes.username}}
+                        </option>
+                    </select-->
+                </div>
+            </div>
+            <div class="row" *ngIf="!disable">
+                <div class="table-responsive">
+                    <app-datagrid [list]="stores_for_task" [headers]="grid_headers" [fieldnames]="field_names"
+                        [filterfields]="filter_fields" [multiselect]="true" (itemSelected)="selectStoreForTask($event)"
+                        (itemDeSelected)=" removeStoreForTask($event)" (selectedAll)="selectAllStores($event)">
+                    </app-datagrid>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary btn-rounded mt-3">Save
+                Task</button>
+        </div>
+    </form>
+</ng-template>
+
+<!-- Carousel Modal-->
+<ng-template #galleryview let-modal>
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Task Attachments</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card text-left">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3">Field Photos</h4>
+                        <ngb-carousel>
+                            <ng-template ngbSlide *ngFor="let womlog of womlogs">
+
+                                <div class="wrapper">
+                                    <img [src]="env.backendfileURI +
+                                                        womlog?.photo_filepath" [alt]="womlog?.photo_fileid"
+                                        class="card-img">
+                                </div>
+                                <div class="carousel-caption">
+                                    <p>{{womlog?.latitude}}/{{womlog?.longitude}}</p>
+                                    <p>{{womlog?.logtype}}</p>
+                                    <p>{{womlog?.uploadeddatetime}}</p>
+                                </div>
+                            </ng-template>
+                        </ngb-carousel>
+                    </div>
+                </div>
+            </div>
+            <!-- end of col -->
+        </div>
+    </div>
+</ng-template>
+
+<!--INVENTORY MAPPING MODAL-->
+<ng-template #assigninventory let-modal>
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Inventories</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('window close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-3 form-group mb-3">
+                <label for="tassigned">Reserved</label>
+
+            </div>
+            <div class="col-md-3 form-group mb-3"> <input type="checkbox" class="form-control" id="markstatus"
+                    [(ngModel)]="isReserved"></div>
+        </div>
+
+        <div class="table-responsive">
+            <app-datagrid [list]="stores_available" [headers]="grid_headers" [fieldnames]="field_names"
+                [filterfields]="filter_fields" (itemSelected)="selectStore($event)"
+                (itemDeSelected)="removeStore($event)" [multiselect]="true">
+            </app-datagrid>
+        </div>
+    </div>
+
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary btn-rounded mt-3" (click)="onDialogClose();
+            modal.dismiss('Save clicked')">Save
+            stores</button>
+    </div>
+
+</ng-template>
+<!--SUB TASK UPDATE MODAL-->
+<ng-template #subtaskupdate let-modal>
+    <form>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">View Action Items</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+
+            <div class="table-responsive">
+                <table id="ul-contact-list" class="display table " style="width:100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th *ngIf="disable==false"></th>
+                            <th>S.No</th>
+                            <th>Name</th>
+                            <th>Ref. Id</th>
+                            <th>Address</th>
+                            <th>City</th>
+                            <th>State</th>
+                            <th>Pincode</th>
+                            <th>Date Assigned</th>
+                            <th>Assigned To</th>
+                            <th>Task Type</th>
+                            <th>Status</th>
+                            <!--th>Save</th-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let subtask of subtasks| paginate: { itemsPerPage: pageSize,
+                                             currentPage: page }; let i = index">
+                            <tr>
+                                <td *ngIf="disable==false">
+                                    <button type="button" class="btn btn-danger btn-icon m-1"
+                                        (click)="removeSubTask(subtask)">
+                                        <span class=" ul-btn_icon"><i class="i-Remove"></i></span>
+                                    </button></td>
+                                <td>
+                                    <button type="button" class="btn btn-success btn-icon m-1"
+                                        (click)="openSubTaskGalleryModal(subtaskgalleryview,subtask)"
+                                        style="cursor:pointer">
+                                        <i class="nav-icon i-Eye"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    {{i+1}}
+                                </td>
+
+                                <td>
+                                    {{subtask.storeInfo.attributes?.inventoryname}}
+                                </td>
+
+                                <td>{{subtask?.storeInfo?.attributes?.refno}}</td>
+                                <td>{{subtask?.storeInfo?.attributes?.doorno}},{{subtask?.storeInfo?.attributes?.streetroad}}
+                                </td>
+                                <td>{{subtask?.storeInfo?.attributes?.city?.data?.attributes?.cityname}}</td>
+                                <td>{{subtask?.storeInfo?.attributes?.state?.data?.attributes.statename}}</td>
+                                <td>{{subtask?.storeInfo?.attributes?.pincode}}</td>
+                                <td>{{task?.attributes?.createdAt | date: 'dd/MM/yyyy'}}</td>
+                                <td>{{task?.attributes?.assignedusername}}</td>
+                                <td>{{subtask?.type}}</td>
+                                <td style="min-width: 120px;">
+                                    <span [ngClass]="{
+                                                     'badge badge-primary mr-1' :
+                                                     task?.attributes?.status =='Assigned',
+                                                    'badge badge-warning mr-1' :
+                                                    task?.attributes?.status ==
+                                                    'InProgress','badge badge-success mr-1' :
+                                                    task?.attributes?.status ==
+                                                    'Completed'}">
+                                        {{subtask.status}}</span>
+                                    <!--select class="form-control"
+                                                     id="status" name="status" [(ngModel)]="subtask.status">
+                                                 <option [attr.value]="item" *ngFor="let item of status; let in=index"
+                                                     [attr.selected]="item===subtask.status">
+                                                     {{item}}
+                                                 </option>
+                                                 </select-->
+                                </td>
+
+                                <!--td>
+                                                 <button type="button" class="btn btn-success btn-icon m-1"
+                                                     (click)="openAttachmentModal(logcreate,task)">
+                                                     <span class=" ul-btn__icon"><i class="i-Edit"></i></span>
+                                                 </button>
+                                             </td-->
+
+                                <!--td>
+                                                 <button type="button" class="btn round btn-primary btn-icon m-1"
+                                                     (click)="saveSubTask(subtaskupdate,subtask)">
+                                                     <span class=" ul-btn__icon"><i class="i-Yes"></i></span>
+                                                 </button>
+                                             </td-->
+                            </tr>
+
+                        </ng-container>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-rounded mt-3" (click)="modal.dismiss('close click')">Close
+            </button>
+            <!--button type="button" class="btn btn-primary btn-rounded mt-3"
+                             (click)="saveSubTask(subtaskupdate,null);modal.dismiss('close click')">Save
+                         </button-->
+        </div>
+    </form>
+</ng-template>
+<!-- Carousel Modal-->
+<ng-template #subtaskgalleryview let-modal>
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Task Attachments</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card text-left">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3">Field Photos</h4>
+                        <ngb-carousel>
+                            <ng-template ngbSlide *ngFor="let log of selectedSubTaskLog;let i=index">
+                                <div class="wrapper">
+                                    <img [src]="env.backendfileURI +
+                                                        log.photo_filepath" alt="Random first slide" class="card-img">
+                                </div>
+                                <div class="carousel-caption">
+                                    <p>{{log.latitude}}</p>
+                                    <p>{{log.longitude}}</p>
+                                    <p>{{log.logtype}}</p>
+                                    <p>{{log.uploadeddatetime}}</p>
+                                </div>
+                            </ng-template>
+                        </ngb-carousel>
+                    </div>
+                </div>
+            </div>
+            <!-- end of col -->
+        </div>
+    </div>
+</ng-template>
+
+<div class="pdf" #content>
+    <div *ngFor="let item of reccePdfData" class="content-wrap">
+          <app-recce-design [item]="item"></app-recce-design>
+    </div>
+</div>
+
+<div class="pdf" #installation>
+    <div *ngFor="let item of installationPdfData" class="content-wrap">
+          <app-recce-design [item]="item"></app-recce-design>
+    </div>
+</div>
+
+<div class="pdf" #audit>
+    <div *ngFor="let item of auditPdfData" class="content-wrap">
+          <app-recce-design [item]="item"></app-recce-design>
+    </div>
+</div>

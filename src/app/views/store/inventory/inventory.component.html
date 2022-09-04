@@ -1,0 +1,154 @@
+<div class="breadcrumb">
+    <div>
+        <span style="font-size: large;">{{ storeName }}</span>
+        <button *ngIf="role == 'irradmin'" type="button" class="btn btn-sm btn-primary btn-rounded"
+            style="margin-left: 5px; padding: 5px 10px;" (click)="openModal(editStatus)">Update status</button>
+    </div>
+    <ul>
+        <h3>Inventory details</h3>
+    </ul>
+</div>
+
+<div class="separator-breadcrumb border-top"></div>
+<div class="row">
+    <!-- <div class="col-md-3" (click)="openModal(newInventory)">
+        <div class="card card-ecommerce-2 o-hidden mb-4">
+            <div class="row">
+                <div class="col">
+                    <h5 class="m-0 font-weight-bold text-muted">Re-upload Photo</h5>
+                </div>
+                <div class="card-action">
+                    <i class="icon i-Add"></i>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <div class="col-md-3" *ngFor="let storepic of inventoryImages">
+        <div class="card o-hidden mb-4 d-flex flex-column">
+            <div class="list-thumb d-flex img-holder" lightbox
+                [fullImage]="{path: env.backendfileURI + storepic?.filepath}">
+                <img [src]="env.backendfileURI + storepic?.filepath" alt="">
+            </div>
+            <div class="flex-grow-1 d-bock">
+                <div
+                    class="card-body align-self-center d-flex flex-column justify-content-between align-items-lg-center">
+                    <a>
+                        <div class="item-title">{{storepic.viewtype}}</div>
+                    </a>
+                    <p class="m-0 text-muted text-small w-15 w-sm-100"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--
+    <div class="col-md-3">
+        <div class="card o-hidden mb-4 d-flex flex-column">
+            <div class="list-thumb d-flex img-holder" lightbox
+                [fullImage]="{path: env.backendfileURI + inventoryImages?.filepath}">
+                <img [src]="env.backendfileURI + inventoryImages[1]?.filepath" alt="">
+            </div>
+            <div class="flex-grow-1 d-bock">
+                <div
+                    class="card-body align-self-center d-flex flex-column justify-content-between align-items-lg-center">
+                    <a>
+                        <div class="item-title">Front View close-up image</div>
+                    </a>
+                    <p class="m-0 text-muted text-small w-15 w-sm-100"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card o-hidden mb-4 d-flex flex-column">
+            <div class="list-thumb d-flex img-holder" lightbox
+                [fullImage]="{path: env.backendfileURI + inventoryImages?.filepath}">
+                <img [src]="env.backendfileURI + inventoryImages[2]?.filepath" alt="">
+            </div>
+            <div class="flex-grow-1 d-bock">
+                <div
+                    class="card-body align-self-center d-flex flex-column justify-content-between align-items-lg-center">
+                    <a>
+                        <div class="item-title">Left side image</div>
+                    </a>
+                    <p class="m-0 text-muted text-small w-15 w-sm-100"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card o-hidden mb-4 d-flex flex-column">
+            <div class="list-thumb d-flex img-holder" lightbox
+                [fullImage]="{path: env.backendfileURI + inventoryImages[3]?.filepath}">
+                <img [src]="env.backendfileURI  + inventoryImages[3]?.filepath" alt="">
+            </div>
+            <div class="flex-grow-1 d-bock">
+                <div
+                    class="card-body align-self-center d-flex flex-column justify-content-between align-items-lg-center">
+                    <a>
+                        <div class="item-title">Right side image</div>
+                    </a>
+                    <p class="m-0 text-muted text-small w-15 w-sm-100"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+-->
+</div>
+
+<!-- INVENTORY MODAL -->
+<!-- <ng-template #newInventory let-modal>
+    <form (ngSubmit)="inventory(modal.dismiss)">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">New Inventory</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="input-group mb-3">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="photo" aria-describedby="inputGroupFileAddon01" placeholder="Select photo" (change)="onFileChanged($event)" aria-describedby="photoHelp">
+                    <label class="custom-file-label" for="photo">{{ photo.value ? photo.value.name : 'Select photo' }}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="photo-type">Photo Type</label>
+                <select class="form-control" [formControl]="photoType" id="photo-type">
+                    <option value="front-view">Front View</option>
+                    <option value="front-view-close-up">Front View Close-up</option>
+                    <option value="left-side-view">Left side view</option>
+                    <option value="right-side-view">Reft side view</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="width">Width</label>
+                <input type="number" class="form-control" id="width" placeholder="width of board in m" [formControl]="width">
+            </div>
+            <div class="form-group">
+                <label for="height">Height</label>
+                <input type="number" class="form-control" id="height" placeholder="height of board in m" [formControl]="height">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary btn-rounded" [disabled]="!inventoryForm.valid">Attach to store</button>
+        </div>
+    </form>
+</ng-template> -->
+
+<ng-template #editStatus let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Update Inventory Status</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <button type="button" class="btn btn-sm m-1" (click)="changeStatus('Pending', modal.dismiss)">Pending</button>
+        <button type="button" class="btn btn-sm m-1" (click)="changeStatus('Rejected', modal.dismiss)">Rejected</button>
+        <button type="button" class="btn btn-sm m-1" (click)="changeStatus('Approved', modal.dismiss)">Approved</button>
+        <button type="button" class="btn btn-sm m-1"
+            (click)="changeStatus('Installed', modal.dismiss)">Installed</button>
+        <button type="button" class="btn btn-sm m-1" (click)="changeStatus('Live', modal.dismiss)">Live</button>
+    </div>
+</ng-template>

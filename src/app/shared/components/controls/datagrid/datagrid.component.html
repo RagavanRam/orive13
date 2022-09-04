@@ -1,0 +1,219 @@
+<!-- begin::modal -->
+<!--div class="ul-card-list__modal">
+                                 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+                                     aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                     <div class="modal-dialog modal-lg">
+                                         <div class="modal-content">
+                                             <div class="modal-body">
+                                                 <form>
+                                                     <div class="form-group row">
+                                                         <label for="inputName" class="col-sm-2 col-form-label">Project
+                                                             Name</label>
+                                                         <div class="col-sm-10">
+                                                             <input type="email" class="form-control" id="inputName"
+                                                                 placeholder="Name">
+                                                         </div>
+                                                     </div>
+                                                     <div class="form-group row">
+                                                         <label for="inputEmail3" class="col-sm-2 col-form-label">Ref.
+                                                             No.</label>
+                                                         <div class="col-sm-10">
+                                                             <input type="email" class="form-control" id="inputEmail3"
+                                                                 placeholder="Email">
+                                                         </div>
+                                                     </div>
+                                                     <div class="form-group row">
+                                                         <label for="" class="col-sm-2 col-form-label">Start
+                                                             Date</label>
+                                                         <div class="col-sm-10">
+                                                             <input type="number" class="form-control" id=""
+                                                                 placeholder="number....">
+                                                         </div>
+                                                     </div>
+
+                                                 </form>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div-->
+<!-- end::modal -->
+<div class="table-responsive">
+    <p-table #dt2 [value]="list" dataKey="id" [rows]=pageSize [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10,25,50]" [loading]="loading" [paginator]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [globalFilterFields]=filterfields class="display table" (onRowSelect)="onRowSelect($event)"
+        (onRowUnselect)="onRowUnselect($event)" id="ul-contact-list" class="display table">
+        <!--ng-template pTemplate="caption">
+                                             <div class="flex">
+                                                 <span class="p-input-icon-left ml-auto">
+                                                     <i class="pi pi-search"></i>
+                                                     <input pInputText type="text"
+                                                         (input)="dt2.filterGlobal($event.target.value, 'contains')"
+                                                         placeholder="Search keyword" />
+                                                 </span>
+                                             </div>
+                                         </ng-template-->
+        <ng-template pTemplate="header">
+            <tr>
+                <th *ngIf="multiselect">
+                    <p-tableHeaderCheckbox (click)="selectAllRows($event)"></p-tableHeaderCheckbox>
+                </th>
+                <th *ngIf="showDelete">
+                </th>
+                <th *ngFor="let headerval of headers">{{headerval}}</th>
+            </tr>
+            <tr>
+                <th *ngIf="multiselect"></th>
+                <th *ngIf="showDelete"></th>
+                <th></th>
+                <th>
+                    <p-columnFilter type="text" field="inventoryname"></p-columnFilter>
+                </th>
+                <th>
+                    <p-columnFilter type="text" field="refno"></p-columnFilter>
+                </th>
+                <th>
+                    <p-columnFilter type="text" field="address">
+                    </p-columnFilter>
+                </th>
+
+                <th>
+                    <p-columnFilter type="text" field="city">
+                    </p-columnFilter>
+
+                    <!--div class="p-d-flex p-jc-between p-ai-center">
+                                                         Agent
+                                                         <p-columnFilter field="city" matchMode="in" display="menu"
+                                                             [showMatchModes]="false" [showOperator]="false"
+                                                             [showAddButton]="false">
+                                                             <ng-template pTemplate="header">
+                                                                 <div class="p-px-3 p-pt-3 p-pb-0">
+                                                                     <span class="p-text-bold">City Picker</span>
+                                                                 </div>
+                                                             </ng-template>
+                                                             <ng-template pTemplate="filter" let-value
+                                                                 let-filter="filterCallback">
+                                                                 <p-multiSelect [ngModel]="selectedCity"
+                                                                     [options]="cities" placeholder="Any"
+                                                                     (onChange)="filter($event.value)"
+                                                                     optionLabel="cityname"
+                                                                     class="multiselect-custom-virtual-scroll"
+                                                                     field="cityname">
+                                                                     <ng-template let-city pTemplate="item">
+                                                                         <div
+                                                                             class="p-multiselect-representative-option">
+                                                                             <span class="p-ml-1">tress</span>
+                                                                         </div>
+                                                                     </ng-template>
+                                                                 </p-multiSelect>
+                                                             </ng-template>
+                                                         </p-columnFilter>
+                                                     </div-->
+                </th>
+                <th>
+                    <p-columnFilter type="text" field="state">
+                    </p-columnFilter>
+                    <!--p-columnFilter field="city" matchMode="in" display="menu"
+                                                         [showMatchModes]="false" [showOperator]="false"
+                                                         [showAddButton]="false">
+                                                         <ng-template pTemplate="header">
+                                                             <div class="p-px-3 p-pt-3 p-pb-0">
+                                                                 <span class="p-text-bold">State Picker</span>
+                                                             </div>
+                                                         </ng-template>
+                                                         <ng-template pTemplate="filter" let-value
+                                                             let-filter="filterCallback">
+                                                             <p-dropdown [(ngModel)]="selectedCity" [options]="cities"
+                                                                 (onChange)="filter($event.value)" placeholder="Any"
+                                                                 [showClear]="true" optionLabel="cityname"
+                                                                 filterBy="cityname">
+                                                                 <ng-template pTemplate="item" let-item>
+                                                                     <span>{{item.cityname}}</span>
+                                                                 </ng-template>
+                                                             </p-dropdown>
+                                                         </ng-template>
+                                                     </p-columnFilter-->
+                </th>
+
+                <th>
+                    <p-columnFilter type="text" field="pincode">
+                    </p-columnFilter>
+                    <!--p-columnFilter type="boolean" field="cityname" display="menu">
+                                                         <ng-template pTemplate="filter" let-value
+                                                             let-filter="filterCallback">
+                                                             <p-dropdown [ngModel]="selectedCity" [options]="cities"
+                                                                 (onChange)="filter($event.value)" placeholder="Any"
+                                                                 [showClear]="true"
+                                                                 class="multiselect-custom-virtual-scroll">
+                                                                 <ng-template let-item pTemplate="item">
+                                                                     <span>{{item.cityname}}</span>
+                                                                 </ng-template>
+                                                             </p-dropdown>
+                                                         </ng-template>
+                                                     </p-columnFilter-->
+                </th>
+                <th>
+                    <p-columnFilter type="text" field="availability">
+                    </p-columnFilter>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-Inventory let-rowIndex="rowIndex">
+            <tr>
+
+                <td *ngIf="multiselect">
+                    <p-tableCheckbox [value]="Inventory"></p-tableCheckbox>
+                </td>
+                <td *ngIf="showDelete"><button type="button" class="btn btn-danger btn-icon m-1"
+                        (click)="removeStore(Inventory)" [disabled]="disable==true">
+                        <span class=" ul-btn__icon"><i class="i-Remove"></i></span>
+                    </button></td>
+                <td>{{rowIndex+1}}</td>
+                <td>{{Inventory.inventoryname}}</td>
+                <td>{{Inventory.refno}}</td>
+                <td>{{Inventory.address}},{{Inventory.streetroad}}</td>
+                <td>{{Inventory.city}}</td>
+                <td>{{Inventory.state}}</td>
+                <td>{{Inventory.pincode}}</td>
+                <td>
+                    <ng-container *ngIf="Inventory.availability; else availabletemplate">
+                        <span [ngClass]="{
+                                                     'badge badge-success mr-1' :
+                                                     Inventory.availability =='available',
+                                                    'badge badge-warning mr-1' :
+                                                    Inventory.availability ==
+                                                    'booked','badge badge-primary mr-1' :
+                                                    Inventory.availability ==
+                                                    'occupied'}"
+                            *ngIf="!isEdit || Inventory.availability == 'occupied'">
+                            {{Inventory.availability}}</span>
+                        <select class="custom-select custom-select-sm"
+                            *ngIf="isEdit && Inventory.availability != 'occupied'" (change)="status($event)">
+                            <option value="occupied" [selected]="Inventory.availability == 'occupied'">Occupied</option>
+                            <option value="booked" [selected]="Inventory.availability == 'booked'">Booked</option>
+                        </select>
+                    </ng-container>
+                    <ng-template #availabletemplate>
+                        <span class="badge badge-success mr-1">
+                            booked</span>
+                    </ng-template>
+
+                </td>
+                <!--td *ngFor="let field of fieldnames">
+                                                     {{field}}
+                                                 </td-->
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="5">No inventories found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<!-- PAGINATION CONTROL -->
+<!--div class="col-md-12 mt-3" *ngIf="list?.length">
+        <pagination-controls (pageChange)="page = $event" previousLabel="" nextLabel="">
+        </pagination-controls>
+    </div-->

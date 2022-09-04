@@ -1,0 +1,271 @@
+<div class="breadcrumb">
+    <div>
+        <h1 style="display: inline-block;">Stores</h1>
+    </div>
+    <div class="ml-3" style="flex-grow: 2;">
+        <input type="text" class="form-control" id="search" placeholder="search stores" #search (input)="filter('')">
+    </div>
+</div>
+
+<div class="separator-breadcrumb border-top"></div>
+<div class="row mb-4">
+    <!-- GRID AND LIST BUTTONS -->
+    <div class="col-6">
+        <button class="btn btn-sm btn-rounded btn-outline-light btn-svg mr-2" [ngClass]="{active: viewMode === 'grid'}"
+            (click)="viewMode = 'grid'">
+            <svg version="1.1" width="16px" id="grid" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 369.946 369.946"
+                style="enable-background:new 0 0 369.946 369.946;" xml:space="preserve">
+                <path d="M250.609,0h-11.934H131.271h-11.934H0v119.337v11.934v107.404v11.934v119.337h119.337h11.934
+            h107.404h11.934h119.337V250.609v-11.934V131.271v-11.934V0H250.609z M238.675,11.934v107.404H131.271V11.934H238.675z
+             M238.675,131.271v107.404H131.271V131.271H238.675z M11.934,11.934h107.404v107.404H11.934V11.934z M11.934,131.271h107.404
+            v107.404H11.934V131.271z M11.934,358.012V250.609h107.404v107.404H11.934z M131.271,358.012V250.609h107.404v107.404H131.271z
+             M358.012,358.012H250.609V250.609h107.404V358.012z M358.012,238.675H250.609V131.271h107.404V238.675z M250.609,119.337V11.934
+            h107.404v107.404H250.609z" />
+            </svg>
+        </button>
+        <button class="btn btn-sm btn-rounded btn-outline-light btn-svg" [ngClass]="{active: viewMode === 'list'}"
+            (click)="viewMode = 'list'">
+            <svg version="1.1" id="list" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" width="16px" height="16px" viewBox="0 0 612 612"
+                style="enable-background:new 0 0 612 612;" xml:space="preserve">
+                <path d="M0,97.92v24.48h612V97.92H0z M0,318.24h612v-24.48H0V318.24z M0,514.08h612V489.6H0V514.08z" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- SELECT CEHECKBOX -->
+    <div class="col-6" *ngIf="filterStatus=='' || filterStatus==null">
+        <div class="btn-group float-right">
+            <button type="button" class="btn btn-outline-light btn-rounded btn-checkbox">
+                <label class="checkbox checkbox-outline-dark">
+                    <input type="checkbox" (change)="selectAll($event)" ng-model="allSelected">
+                    <span></span>
+                    <span class="checkmark"></span>
+                </label>
+            </button>
+            <div class="btn-group" ngbDropdown role="group" aria-label="Select all" placement="left">
+                <button class="btn btn-primary btn-rounded" ngbDropdownToggle></button>
+                <div class="dropdown-menu" ngbDropdownMenu>
+                    <button class="dropdown-item" (click)="filter('approved')">Show Approved</button>
+                    <button class="dropdown-item" (click)="filter('rejected')">Show Rejected</button>
+                    <button class="dropdown-item" (click)="filter('pending')">Show Pending</button>
+                    <button class="dropdown-item" (click)="filter('')">Show All</button>
+                    <hr class="dropdown-divider">
+                    <button class="dropdown-item" (click)="generateRecce()">Generate
+                        Recce</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- DATA LIST -->
+<div class="row" [ngClass]="{'list-horizontal': viewMode === 'list', 'list-grid': viewMode === 'grid'}">
+    <div *ngIf="stores?.length === 0">
+        <p class="text-28 subheading mb-3">Not found!!</p>
+        <p class="mb-5  text-muted text-18">Sorry! No Stores matches to your search criteria.</p>
+    </div>
+    <!-- SINGLE LIST ITEM -->
+    <div *ngFor="let store of stores  | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index"
+        class="list-item" [ngClass]="{'col-md-12': viewMode === 'list', 'col-md-3': viewMode === 'grid'}">
+        <div class="card o-hidden mb-4 d-flex"
+            [ngClass]="{'flex-row': viewMode === 'list', 'flex-column': viewMode === 'grid'}">
+            <div class="list-thumb d-flex">
+                <img *ngIf="store.attributes?.invpics[0]?.filepath;else shownoimage"
+                    [src]="env.backendfileURI + store.attributes?.invpics[0]?.filepath" alt="">
+                <ng-template #shownoimage> <img src="../assets/images/noimage.png" alt=""></ng-template>
+            </div>
+            <div class="flex-grow-1" [ngClass]="{'pl-2 d-flex': viewMode === 'list', 'd-bock': viewMode === 'grid'}">
+                <div class="card-body align-self-center d-flex flex-column justify-content-between align-items-lg-center"
+                    [ngClass]="{'flex-lg-row': viewMode === 'list'}" style="cursor: pointer;">
+                    <!-- OTHER DATA -->
+                    <a class="text-10 w-15 w-sm-100" (click)="storeDetails(store.id)">
+                        <div class="item-title">{{ store.attributes?.inventoryname }}</div>
+                    </a>
+                    <p class="m-0 text-success text-10 w-15 w-sm-100" (click)="storeDetails(store.id)"><b>
+                            {{ (store.attributes?.refno)? store.attributes?.refno : store.attributes?.temprefno}}</b>
+                    </p>
+                    <!--p class="m-0 text-muted text-small w-15 w-sm-100"> {{ store.attributes?.doorno }},
+                        {{ store.attributes?.streetroad}},{{ store.attributes?.address }}</p-->
+                    <p class="m-0 text-muted text-10 w-15 w-sm-140">
+                        {{ store.attributes?.city?.data?.attributes?.cityname }},
+                        {{ store.attributes?.state?.data?.attributes?.statename}},
+                        {{ store.attributes?.pincode }}
+                        <!--del class="text-secondary">{{item?.price?.previous | currency}}</del-->
+                    </p>
+
+                    <!--p class="m-0 text-muted text-small w-15 w-sm-100">Board
+                        type:{{ store?.attributes?.boards?.boardtype }}</p-->
+                    <p class="m-0 text-muted text-10 w-15 w-sm-140">Created by:
+                        {{ store?.attributes?.createdbyuser?.data?.attributes?.username }}
+                    </p>
+                    <p class="m-0 text-muted text-10 w-15 w-sm-140">{{ store.attributes.createdAt | date }}
+                    </p>
+                    <p class="m-0 text-muted text-10 w-15 w-sm-100 d-lg-block item-badges">
+                        <!--span
+                            class="badge
+                            badge-info-{{store?.attributes?.status?.data?.attributes.statusname === 'Pending' ? 'light' : store?.status === 'Rejected' ? 'danger' : store?.status === 'Approved' ? 'success' : item?.status === 'Installed' ? 'info' : 'primary'}}">{{store?.attributes?.status?.data?.attributes.statusname}}</span-->
+                        <!--span [ngClass]="{'badge badge-info' : store?.attributes?.status?.data?.attributes?.statusname ===
+                            'Pending', 'badge badge-success' : store?.attributes?.status?.data?.attributes?.statusname ===
+                            'Approved','badge badge-warning' : store?.attributes?.status?.data?.attributes?.statusname ===
+                            'Rework','badge badge-danger' : store?.attributes?.status?.data?.attributes?.statusname ===
+                            'Rejected'}">
+                            {{store?.attributes?.status?.data?.attributes.statusname}}
+                        </span-->
+                        <span *ngIf="store.attributes?.status?.data?.attributes?.statusname==='Pending'"
+                            class="badge badge-info"> {{store?.attributes?.status?.data?.attributes.statusname}}
+                        </span>
+                        <span *ngIf="store.attributes?.status?.data?.attributes?.statusname==='Approved'"
+                            class="badge badge-success"> {{store?.attributes?.status?.data?.attributes.statusname}}
+                        </span>
+                        <span *ngIf="store.attributes?.status?.data?.attributes?.statusname==='Rework'"
+                            class="badge badge-warning"> {{store?.attributes?.status?.data?.attributes.statusname}}
+                        </span>
+                        <span *ngIf="store.attributes?.status?.data?.attributes?.statusname==='Rejected'"
+                            class="badge badge-danger"> {{store?.attributes?.status?.data?.attributes.statusname}}
+                        </span>
+                    </p>
+
+                    <div class="p-1 text-left font-weight-light d-flex item-actions">
+                        <button type="button" class=" btn btn-icon bg-transparent"
+                            [ngClass]="{'d-none': viewMode === 'grid'}" *ngIf="store?.attributes?.status?.data?.attributes?.statusname ===
+                            'Rework' && authService.role.value !=='fieldexecutive'" popoverTitle="Rework Remarks"
+                            placement="left" ngbPopover="{{store?.attributes?.comments[0]?.description}}">
+                            <span class="d-flex align-items-center">
+                                <i class="i-Eye"></i></span>
+                        </button>
+                        <button type="button" class=" btn btn-icon bg-transparent"
+                            [ngClass]="{'d-none': viewMode === 'grid'}" *ngIf="store?.attributes?.agreement?.filepath
+                            && authService.role.value !=='fieldexecutive'" placement="top"
+                            (click)="downloadFile(store.attributes?.agreement?.filepath)">
+                            <i class="i-File-Download"></i>
+                        </button>
+                        <button class="btn btn-icon bg-transparent" [ngClass]="{'d-none': viewMode === 'grid'}" *ngIf="authService.role.value=='irradmin' &&
+                        store.attributes?.status?.data?.attributes?.statusname=='Pending'"
+                            (click)="approveInventory(store, store?.id, 2)">
+                            <i class="i-Yes text-16 text-success" data-toggle="tooltip" data-placement="top"
+                                title="Approve"></i>
+                        </button>
+                        <button class="btn btn-icon bg-transparent" [ngClass]="{'d-none': viewMode === 'grid'}" *ngIf="authService.role.value=='irradmin' &&
+                        store.attributes?.status?.data?.attributes?.statusname=='Pending'" (click)="
+                            openModal(reworkcomments,store)">
+                            <i class="i-Repeat-2 text-16 text-warning" data-toggle="tooltip" data-placement="top"
+                                title="Rework"></i>
+                        </button>
+                        <button class="btn btn-icon bg-transparent" [ngClass]="{'d-none': viewMode === 'grid'}" *ngIf="authService.role.value=='irradmin' &&
+                        store.attributes?.status?.data?.attributes?.statusname=='Pending'"
+                            (click)="approveInventory(store,store?.id,4)">
+                            <i class="i-Close text-16 text-danger" data-toggle="tooltip" data-placement="top"
+                                title="Reject"></i>
+                        </button>
+                    </div>
+
+                    <div class="p-1 text-left font-weight-light d-flex item-actions">
+                        <button type="button" class=" btn btn-icon bg-transparent"
+                            [ngClass]="{'d-none': viewMode === 'grid'}" *ngIf="store?.attributes?.agreement?.filepath
+                            && authService.role.value =='fieldexecutive'" placement="top"
+                            (click)="downloadFile(store.attributes?.agreement?.filepath)">
+                            <i class="i-File-Download"></i>
+                        </button>
+                        <button class=" btn btn-icon bg-transparent" (click)="editStore(store.id)" *ngIf="(store?.attributes?.status?.data?.attributes?.statusname ===
+                            'Rework' || store?.attributes?.status?.data?.attributes?.statusname ===
+                            'Pending') && authService.role.value=='fieldexecutive'" [ngClass]="{'d-none': viewMode ===
+                            'grid'}"><span class="mr-3 d-flex align-items-center">
+                                <i class="i-Edit" data-toggle="tooltip" data-placement="top"
+                                    title="Edit Store"></i></span>
+                        </button>
+                        <button type="button" class=" btn btn-icon bg-transparent"
+                            [ngClass]="{'d-none': viewMode === 'grid'}" *ngIf="store?.attributes?.status?.data?.attributes?.statusname ===
+                            'Rework' && authService.role.value=='fieldexecutive'" popoverTitle="Rework Remarks"
+                            placement="left" ngbPopover="{{store?.attributes?.comments[0]?.description}}">
+                            <span class="d-flex align-items-center">
+                                <i class="i-Eye"></i></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class=" align-self-center pl-3 pb-2 pr-3 item-select"
+                    *ngIf="filterStatus=='' || filterStatus==null">
+                    <label class="checkbox checkbox-outline-dark">
+                        <input type="checkbox" id="rowcheck" (change)="selected(store.id, store)">
+                        <span></span>
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PAGINATION CONTROL -->
+    <div class="col-md-12 mt-3" *ngIf="stores?.length">
+        <pagination-controls (pageChange)="page = $event" (click)="pageChane()" previousLabel="" nextLabel=""></pagination-controls>
+    </div>
+</div>
+
+<ng-template #openDetails let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Store Details</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <table width="100%">
+            <tr>
+                <th>Store name</th>
+                <td>{{store?.inventoryname}}</td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td>{{store?.doorno}}, {{store?.street}}<br />
+                    {{ store?.state}}, {{ store?.city }} - {{ store?.pincode }}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{store?.contactno_1}}</td>
+            </tr>
+            <tr>
+                <th>Board type</th>
+                <td>{{store?.board_type}}</td>
+            </tr>
+            <tr>
+                <th>Location</th>
+                <td>{{store?.latitude}}, {{store?.longitude}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal-footer" *ngIf="role == 'irradmin'">
+        <button type="submit" class="btn btn-primary btn-rounded mt-3" (click)="editStore(store.id)">Edit</button>
+    </div>
+</ng-template>
+
+<!-- COMMENTS MODAL -->
+<ng-template #reworkcomments let-modal>
+    <form>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Enter comments</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="type">Remarks</label>
+                <input id="type" id="comments" name="comments" required class="form-control form-control-rounded"
+                    type="text" form [(ngModel)]="comments">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" (click)="reworkInventory()" class="btn btn-primary btn-rounded mt-3">Submit</button>
+        </div>
+    </form>
+</ng-template>
+
+<div class="pdf" #content>
+    <div *ngFor="let item of pdfData" class="content-wrap">
+        <app-recce-design [item]="item"></app-recce-design>
+    </div>
+</div>

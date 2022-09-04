@@ -1,0 +1,23 @@
+agm-map {
+  height: 300px;
+  width: 100%;
+}
+
+.storeState-link-left {
+  border-radius: 5px 0 0 5px;
+}
+
+.storeState-link-right {
+  border-radius: 0 5px 5px 0;
+}
+
+.storeState-link-left,
+.storeState-link-right {
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.storeState-link-left.active:hover,
+.storeState-link-right.active:hover {
+  color: #fff !important;
+}
